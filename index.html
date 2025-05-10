@@ -11,14 +11,14 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="terminal-wrapper">
-    <div class="terminal-header">
-      <span class="circle red"></span>
-      <span class="circle yellow"></span>
-      <span class="circle green"></span>
+  <div class="terminal-wrapper" role="application" aria-label="Portfolio Terminal">
+    <div class="terminal-header" role="toolbar">
+      <span class="circle red" aria-label="Close"></span>
+      <span class="circle yellow" aria-label="Minimize"></span>
+      <span class="circle green" aria-label="Maximize"></span>
       <span class="terminal-title">Portfolio Terminal</span>
     </div>
-    <textarea id="main" spellcheck="false" autofocus></textarea>
+    <textarea id="main" spellcheck="false" autofocus aria-label="Terminal input and output"></textarea>
   </div>
   <script src="main.js"></script>
 </body>
