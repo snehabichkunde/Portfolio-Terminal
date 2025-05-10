@@ -3,10 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Portfolio</title>
+  <title>Portfolio Terminal</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%23000'/><text x='2' y='12' fill='%230f0' font-family='monospace' font-size='10'>$</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <textarea name="terminal-text-area" id="main" rows="20" cols="100" autofocus></textarea>
-  <script src="./main.js"></script>
+  <div class="terminal-wrapper">
+    <div class="terminal-header">
+      <span class="circle red"></span>
+      <span class="circle yellow"></span>
+      <span class="circle green"></span>
+      <span class="terminal-title">Portfolio Terminal</span>
+    </div>
+    <textarea id="main" spellcheck="false" autofocus></textarea>
+  </div>
+  <script src="main.js"></script>
 </body>
 </html>

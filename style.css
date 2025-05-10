@@ -1,0 +1,129 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+    margin: 0;
+    padding: 20px;
+    font-family: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  
+  .terminal-wrapper {
+    width: 90%;
+    max-width: 1000px;
+    height: 80vh;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .terminal-header {
+    height: 28px;
+    background: linear-gradient(to bottom, #e0e0e0 0%, #c0c0c0 100%);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    user-select: none;
+  }
+  
+  .circle {
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+    transitionieri: transform 0.2s, opacity 0.2s;
+  }
+  
+  .circle:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  
+  .red {
+    background-color: #ff5f57;
+  }
+  
+  .yellow {
+    background-color: #ffbd2e;
+  }
+  
+  .green {
+    background-color: #28c940;
+  }
+  
+  .terminal-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #333;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  #main {
+    flex: 1;
+    background: transparent;
+    color: #00ff00;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 16px;
+    resize: none;
+    outline: none;
+    caret-color: #00ff00;
+    text-shadow: 0 0 2px rgba(0, 255, 0, 0.5);
+    white-space: pre-wrap;
+    overflow-y: auto;
+  }
+  
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  
+  #main::after {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: #00ff00;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+  
+  #main::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  #main::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  #main::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  
+  @media (max-width: 600px) {
+    .terminal-wrapper {
+      width: 95%;
+      height: 90vh;
+    }
+    #main {
+      font-size: 12px;
+      padding: 12px;
+    }
+  }
