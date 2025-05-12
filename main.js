@@ -5,32 +5,53 @@ const terminalPortfolio = (() => {
   let historyIndex = -1;
 
   const fileSystem = {
-    "/": ["about", "projects", "games", "interests", "hobbies", "themes", "calculator", "technical_skills", "resume"],
+    "/": [
+      "about",
+      "projects",
+      "games",
+      "interests",
+      "hobbies",
+      "technical_skills",
+      "soft_skills",
+      "coding_profiles",
+      "coursework",
+      "getgithub",
+      "getlinkedin",
+      "getcv",
+      "themes"
+    ],
     "/games": ["snake", "tictactoe", "flappybird", "bubblecrash"],
     "/projects": ["digital_diary", "my_shell", "boids_flocking"],
     "/projects/digital_diary": [],
     "/projects/my_shell": [],
     "/projects/boids_flocking": [],
     "/technical_skills": [],
+    "/soft_skills": [],
     "/hobbies": [],
     "/interests": [],
-    "/themes": ["dark", "light", "glass"],
+    "/coding_profiles": [],
+    "/coursework": [],
+    "/getgithub": [],
+    "/getlinkedin": [],
+    "/getcv": [],
+    "/themes": ["dark", "light", "glass"]
   };
 
   const fileContent = {
     "/about": `
 {
   "name": "Sneha Bichkunde",
-  "student_at": "SGGS, Nanded",
-  "role": "SDE",
-  "location": "Nanded",
   "email": "bichkundesneha@gmail.com",
-  "fun_fact": "I automate everything, even my coffee brewing! 😄"
+  "city": "Nanded",
+  "education_summary": "B.Tech in Information Technology (8.3 GPA), SGGS Nanded",
+  "fun_fact": "Why click when you can cd your way to anything?"
 }
     `,
     "/hobbies": `
 {
-  "hobbies": ["reading", "writing poetry", "building websites"]
+  "reading": ["Drama", "Philosophy", "Travel Journals"],
+  "sports": ["Cycling", "Badminton"],
+  "programming": ["Data Structures & Algorithms", "C++", "System Design"]
 }
     `,
     "/interests": `
@@ -43,8 +64,16 @@ const terminalPortfolio = (() => {
   "languages": ["C", "C++", "JavaScript"],
   "tools": ["Git", "GitHub", "Docker", "VS Code", "Bash", "GDB", "Makefile"],
   "frameworks": ["Node.js", "Express.js", "React.js", "Socket.io"],
-  "databases": ["MongoDB", "MySQL"],
-  "soft_skills": ["Problem-solving", "Teamwork", "Communication", "Time Management"],
+  "databases": ["MongoDB", "MySQL"]
+}
+    `,
+    "/soft_skills": `
+{
+  "soft_skills": ["Problem-solving", "Teamwork", "Communication", "Time Management"]
+}
+    `,
+    "/coursework": `
+{
   "coursework": ["Operating Systems", "Data Structures & Algorithms", "DBMS", "Computer Networks"]
 }
     `,
@@ -53,69 +82,171 @@ const terminalPortfolio = (() => {
   "projects": [
     {
       "name": "Digital Diary",
-      "description": "Full-stack app for secure personal stories.",
+      "description": "Developed a full-stack diary app to securely store and manage personal stories.",
       "tech": ["React.js", "Node.js", "MongoDB", "JWT"],
-      "live_link": "https://digital-diary-sneha.netlify.app/",
-      "github": "https://github.com/snehabichkunde/DigitalDiary"
+      "details": [
+        "Built frontend with React.js and backend with Node.js/Express.js, using MongoDB for storage",
+        "Implemented JWT authentication to protect user data and enable secure logins",
+        "Deployed on Netlify and Render, supporting 100+ user requests with zero downtime"
+      ],
+      "live_link": {
+        "text": "Live Demo",
+        "url": "https://digital-diary-sneha.netlify.app/"
+      },
+      "github": {
+        "text": "GitHub",
+        "url": "https://github.com/snehabichkunde/DigitalDiary"
+      }
     },
     {
       "name": "my_shell",
-      "description": "POSIX-compliant shell in C for enhanced terminal interaction.",
+      "description": "Designed a POSIX-compliant shell in C to enhance terminal interaction.",
       "tech": ["C", "ncurses"],
-      "github": "https://github.com/snehabichkunde/c-shell"
+      "details": [
+        "Developed an interactive REPL with ncurses, improving navigation and feedback",
+        "Integrated command history and process management for efficient workflows"
+      ],
+      "github": {
+        "text": "GitHub",
+        "url": "https://github.com/snehabichkunde/c-shell"
+      }
     },
     {
       "name": "Boids Flocking",
-      "description": "Flocking simulation in p5.js with Quadtree optimization.",
+      "description": "Created a flocking simulation in p5.js to model bird-like behavior efficiently.",
       "tech": ["p5.js", "JavaScript"],
-      "live_link": "https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/",
-      "github": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree"
+      "details": [
+        "Optimized neighbor detection with a Quadtree, reducing complexity from O(n^2) to O(n log n)",
+        "Enhanced real-time performance for smooth rendering of 100+ boids"
+      ],
+      "live_link": {
+        "text": "Live Demo",
+        "url": "https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/"
+      },
+      "github": {
+        "text": "GitHub",
+        "url": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree"
+      }
     }
-  ]
+  ],
+  "table_format": "| Name | Description | Tech | Links |\n|------|-------------|------|-------|\n| Digital Diary | Full-stack diary app to securely store stories | React.js, Node.js, MongoDB, JWT | [Live Demo](https://digital-diary-sneha.netlify.app/), [GitHub](https://github.com/snehabichkunde/DigitalDiary) |\n| my_shell | POSIX-compliant shell in C | C, ncurses | [GitHub](https://github.com/snehabichkunde/c-shell) |\n| Boids Flocking | Flocking simulation with Quadtree optimization | p5.js, JavaScript | [Live Demo](https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/), [GitHub](https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree) |"
 }
     `,
     "/projects/digital_diary": `
 {
   "name": "Digital Diary",
-  "description": "Full-stack app for secure personal stories.",
+  "description": "Developed a full-stack diary app to securely store and manage personal stories.",
   "tech": ["React.js", "Node.js", "MongoDB", "JWT"],
   "details": [
-    "Built with React.js frontend and Node.js/Express.js backend",
-    "Used JWT for secure authentication",
-    "Deployed on Netlify and Render"
+    "Built frontend with React.js and backend with Node.js/Express.js, using MongoDB for storage",
+    "Implemented JWT authentication to protect user data and enable secure logins",
+    "Deployed on Netlify and Render, supporting 100+ user requests with zero downtime"
   ],
-  "live_link": "https://digital-diary-sneha.netlify.app/",
-  "github": "https://github.com/snehabichkunde/DigitalDiary"
+  "live_link": {
+    "text": "Live Demo",
+    "url": "https://digital-diary-sneha.netlify.app/"
+  },
+  "github": {
+    "text": "GitHub",
+    "url": "https://github.com/snehabichkunde/DigitalDiary"
+  }
 }
     `,
     "/projects/my_shell": `
 {
   "name": "my_shell",
-  "description": "POSIX-compliant shell in C for enhanced terminal interaction.",
+  "description": "Designed a POSIX-compliant shell in C to enhance terminal interaction.",
   "tech": ["C", "ncurses"],
   "details": [
-    "Interactive REPL with ncurses",
-    "Supports command history and process management"
+    "Developed an interactive REPL with ncurses, improving navigation and feedback",
+    "Integrated command history and process management for efficient workflows"
   ],
-  "github": "https://github.com/snehabichkunde/c-shell"
+  "github": {
+    "text": "GitHub",
+    "url": "https://github.com/snehabichkunde/c-shell"
+  }
 }
     `,
     "/projects/boids_flocking": `
 {
   "name": "Boids Flocking",
-  "description": "Flocking simulation in p5.js with Quadtree optimization.",
+  "description": "Created a flocking simulation in p5.js to model bird-like behavior efficiently.",
   "tech": ["p5.js", "JavaScript"],
   "details": [
-    "Optimized with Quadtree (O(n log n))",
-    "Real-time rendering of 100+ boids"
+    "Optimized neighbor detection with a Quadtree, reducing complexity from O(n^2) to O(n log n)",
+    "Enhanced real-time performance for smooth rendering of 100+ boids"
   ],
-  "live_link": "https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/",
-  "github": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree"
+  "live_link": {
+    "text": "Live Demo",
+    "url": "https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/"
+  },
+  "github": {
+    "text": "GitHub",
+    "url": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree"
+  }
 }
     `,
-    "/resume": `
+    "/coding_profiles": `
 {
-  "message": "Opening resume..."
+  "profiles": [
+    {
+      "name": "GFG",
+      "link": {
+        "text": "GFG Profile",
+        "url": "https://www.geeksforgeeks.org/user/bichkund5ad6/"
+      }
+    },
+    {
+      "name": "LeetCode",
+      "link": {
+        "text": "LeetCode Profile",
+        "url": "https://leetcode.com/u/SnehaBichkunde/"
+      }
+    }
+  ]
+}
+    `,
+    "/getgithub": `
+{
+  "redirect": "https://github.com/snehabichkunde",
+  "message": "Redirecting to GitHub profile..."
+}
+    `,
+    "/getlinkedin": `
+{
+  "redirect": "https://www.linkedin.com/in/sneha-bichkunde-aba203269/",
+  "message": "Redirecting to LinkedIn profile..."
+}
+    `,
+    "/getcv": `
+{
+  "message": "CV functionality coming soon!"
+}
+    `,
+    "/games": `
+{
+  "message": "Games functionality coming soon!",
+  "available_games": ["snake", "tictactoe", "flappybird", "bubblecrash"]
+}
+    `,
+    "/games/snake": `
+{
+  "message": "Snake game coming soon!"
+}
+    `,
+    "/games/tictactoe": `
+{
+  "message": "Tic-Tac-Toe game coming soon!"
+}
+    `,
+    "/games/flappybird": `
+{
+  "message": "Flappy Bird game coming soon!"
+}
+    `,
+    "/games/bubblecrash": `
+{
+  "message": "Bubble Crash game coming soon!"
 }
     `,
     "/themes": `
@@ -284,12 +415,12 @@ clear        - Clear the terminal screen
 ls           - List directories and files
 cd <dir>     - Change directory or view file content
 cd ..        - Go back
-get github   - Open GitHub profile
-get linkedin - Open LinkedIn profile
+getgithub    - Open GitHub profile
+getlinkedin  - Open LinkedIn profile
+getcv        - View CV (coming soon)
 play <game>  - Play a game (snake, tictactoe, etc.)
 theme <name> - Switch theme (dark, light, glass)
 calc <expr>  - Calculate expression (e.g., 2+3*4)
-resume       - View resume
           `;
           break;
 
@@ -318,6 +449,10 @@ resume       - View resume
               output = fileContent[currentPath] ? fileContent[currentPath].trim() : "";
             } else if (fileContent[targetPath]) {
               output = fileContent[targetPath].trim();
+              if (fileContent[targetPath].includes('"redirect"')) {
+                const content = JSON.parse(fileContent[targetPath].trim());
+                window.open(content.redirect, "_blank");
+              }
             } else {
               output = `cd: ${args[0]}: No such file or directory.`;
             }
@@ -326,21 +461,23 @@ resume       - View resume
           }
           break;
 
-        case "get":
-          if (args[0] === "github") {
-            output = "Opening GitHub...";
-            window.open("https://github.com/snehabichkunde", "_blank");
-          } else if (args[0] === "linkedin") {
-            output = "Opening LinkedIn...";
-            window.open("https://www.linkedin.com/in/sneha-bichkunde-aba203269/", "_blank");
-          } else {
-            output = `get: ${args[0] || ""}: Invalid option.`;
-          }
+        case "getgithub":
+          output = fileContent["/getgithub"].trim();
+          window.open("https://github.com/snehabichkunde", "_blank");
+          break;
+
+        case "getlinkedin":
+          output = fileContent["/getlinkedin"].trim();
+          window.open("https://www.linkedin.com/in/sneha-bichkunde-aba203269/", "_blank");
+          break;
+
+        case "getcv":
+          output = fileContent["/getcv"].trim();
           break;
 
         case "play":
           if (fileSystem["/games"]?.includes(args[0])) {
-            output = `Launching ${args[0]}... (Game not implemented yet)`;
+            output = fileContent[`/games/${args[0]}`]?.trim() || `Launching ${args[0]}... (Game not implemented yet)`;
           } else {
             output = `play: ${args[0] || ""}: Game not found.`;
           }
@@ -363,11 +500,6 @@ resume       - View resume
           } catch {
             output = `calc: Invalid expression.`;
           }
-          break;
-
-        case "resume":
-          output = "Opening resume...";
-          window.open("https://example.com/sneha_resume.pdf", "_blank");
           break;
 
         default:

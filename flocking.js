@@ -1,29 +1,34 @@
-let flock = [];
-let perceptionRadius = 50;
-const numBoids = 150;
+// Constants
+const NUM_BOIDS = 200;
+const PERCEPTION_RADIUS = 85;
+const MAX_SPEED = 2;
+const MAX_FORCE = 0.05;
+const BOID_SIZE = 5;
+const QUADTREE_CAPACITY = 6; // Increased for performance with more boids
 
+// Themes with minimal trail effect
 const themes = {
   dark: {
-    boidColor: "173, 216, 230",
-    strokeColor: "255, 255, 255",
-    backgroundColor: "15, 15, 26",
-    backgroundAlpha: 30
+    boidColor: [200, 220, 240, 140], // Soft blue-gray
+    backgroundColor: [20, 20, 40],
+    backgroundAlpha: 3 // Minimal tail
   },
   light: {
-    boidColor: "25, 100, 180",
-    strokeColor: "200, 200, 200",
-    backgroundColor: "240, 240, 245",
-    backgroundAlpha: 30
+    boidColor: [220, 230, 245, 140], // Creamy white
+    backgroundColor: [240, 245, 255],
+    backgroundAlpha: 3 // Minimal tail
   },
   glass: {
-    boidColor: "220, 220, 240",
-    strokeColor: "255, 255, 255",
-    backgroundColor: "26, 26, 47",
-    backgroundAlpha: 20
+    boidColor: [210, 200, 230, 140], // Pale lavender
+    backgroundColor: [30, 30, 50],
+    backgroundAlpha: 2 // Minimal tail
   }
 };
 
+let flock = [];
 let currentTheme = themes.dark;
+let lastThemeChange = 0;
+let forceClear = false; // Flag to clear canvas on theme change
 
 class Point {
   constructor(x, y, userData) {
@@ -69,181 +74,129 @@ class Quadtree {
   }
 
   subdivide() {
-    let x = this.boundary.x;
-    let y = this.boundary.y;
-    let w = this.boundary.w / 2;
-    let h = this.boundary.h / 2;
-
-    let ne = new Rectangle(x + w, y - h, w, h);
-    this.northeast = new Quadtree(ne, this.capacity);
-    let nw = new Rectangle(x - w, y - h, w, h);
-    this.northwest = new Quadtree(nw, this.capacity);
-    let se = new Rectangle(x + w, y + h, w, h);
-    this.southeast = new Quadtree(se, this.capacity);
-    let sw = new Rectangle(x - w, y + h, w, h);
-    this.southwest = new Quadtree(sw, this.capacity);
-
+    const { x, y, w, h } = this.boundary;
+    this.northeast = new Quadtree(new Rectangle(x + w / 2, y - h / 2, w / 2, h / 2), this.capacity);
+    this.northwest = new Quadtree(new Rectangle(x - w / 2, y - h / 2, w / 2, h / 2), this.capacity);
+    this.southeast = new Quadtree(new Rectangle(x + w / 2, y + h / 2, w / 2, h / 2), this.capacity);
+    this.southwest = new Quadtree(new Rectangle(x - w / 2, y + h / 2, w / 2, h / 2), this.capacity);
     this.divided = true;
   }
 
   insert(point) {
-    if (!this.boundary.contains(point)) {
-      return false;
-    }
-
+    if (!this.boundary.contains(point)) return false;
     if (this.points.length < this.capacity) {
       this.points.push(point);
       return true;
-    } else {
-      if (!this.divided) {
-        this.subdivide();
-      }
-
-      return (
-        this.northeast.insert(point) ||
-        this.northwest.insert(point) ||
-        this.southeast.insert(point) ||
-        this.southwest.insert(point)
-      );
     }
+    if (!this.divided) this.subdivide();
+    return (
+      this.northeast.insert(point) ||
+      this.northwest.insert(point) ||
+      this.southeast.insert(point) ||
+      this.southwest.insert(point)
+    );
   }
 
-  query(range, found) {
-    if (!found) found = [];
-
-    if (!this.boundary.intersects(range)) {
-      return found;
-    } else {
-      for (let p of this.points) {
-        if (range.contains(p)) {
-          found.push(p);
-        }
-      }
-      if (this.divided) {
-        this.northwest.query(range, found);
-        this.northeast.query(range, found);
-        this.southwest.query(range, found);
-        this.southeast.query(range, found);
-      }
-      return found;
+  query(range, found = []) {
+    if (!this.boundary.intersects(range)) return found;
+    for (let p of this.points) {
+      if (range.contains(p)) found.push(p);
     }
+    if (this.divided) {
+      this.northwest.query(range, found);
+      this.northeast.query(range, found);
+      this.southwest.query(range, found);
+      this.southeast.query(range, found);
+    }
+    return found;
   }
 }
 
 class Boid {
   constructor(x, y) {
     this.position = createVector(x, y);
-    this.velocity = p5.Vector.random2D();
-    this.velocity.mult(random(2, 4));
-    this.acceleration = createVector(0, 0);
-    this.maxSpeed = 2;
-    this.maxForce = 0.1;
+    this.velocity = p5.Vector.random2D().mult(random(0.5, MAX_SPEED));
+    this.acceleration = createVector();
+    this.maxSpeed = MAX_SPEED;
+    this.maxForce = MAX_FORCE;
   }
 
   edges() {
-    if (this.position.x > width) this.position.x = 0;
-    if (this.position.x < 0) this.position.x = width;
-    if (this.position.y > height) this.position.y = 0;
-    if (this.position.y < 0) this.position.y = height;
+    this.position.x = (this.position.x + width) % width;
+    this.position.y = (this.position.y + height) % height;
   }
 
-  alignment(boids) {
+  align(boids) {
     let steering = createVector();
     let total = 0;
     for (let other of boids) {
-      let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (other != this && d < perceptionRadius) {
+      if (other !== this && this.position.dist(other.position) < PERCEPTION_RADIUS) {
         steering.add(other.velocity);
         total++;
       }
     }
     if (total > 0) {
-      steering.div(total);
-      steering.setMag(this.maxSpeed);
-      steering.sub(this.velocity);
-      steering.limit(this.maxForce);
+      steering.div(total).setMag(this.maxSpeed).sub(this.velocity).limit(this.maxForce);
     }
     return steering;
   }
 
-  cohesion(boids) {
+  cohere(boids) {
     let steering = createVector();
     let total = 0;
     for (let other of boids) {
-      let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (other != this && d < perceptionRadius) {
+      if (other !== this && this.position.dist(other.position) < PERCEPTION_RADIUS) {
         steering.add(other.position);
         total++;
       }
     }
     if (total > 0) {
-      steering.div(total);
-      steering.sub(this.position);
-      steering.setMag(this.maxSpeed);
-      steering.sub(this.velocity);
-      steering.limit(this.maxForce);
+      steering.div(total).sub(this.position).setMag(this.maxSpeed).sub(this.velocity).limit(this.maxForce);
     }
     return steering;
   }
 
-  separation(boids) {
+  separate(boids) {
     let steering = createVector();
     let total = 0;
     for (let other of boids) {
-      let d = dist(this.position.x, this.position.y, other.position.x, other.position.y);
-      if (other != this && d < perceptionRadius) {
-        let diff = p5.Vector.sub(this.position, other.position);
-        diff.div(d * d);
+      let d = this.position.dist(other.position);
+      if (other !== this && d < PERCEPTION_RADIUS && d > 0) {
+        let diff = p5.Vector.sub(this.position, other.position).div(d * d);
         steering.add(diff);
         total++;
       }
     }
     if (total > 0) {
-      steering.div(total);
-      steering.setMag(this.maxSpeed);
-      steering.sub(this.velocity);
-      steering.limit(this.maxForce);
+      steering.div(total).setMag(this.maxSpeed).sub(this.velocity).limit(this.maxForce);
     }
     return steering;
   }
 
   flock(boids) {
-    let alignment = this.alignment(boids);
-    let cohesion = this.cohesion(boids);
-    let separation = this.separation(boids);
-
-    this.acceleration.add(alignment);
-    this.acceleration.add(cohesion);
-    this.acceleration.add(separation);
+    this.acceleration.set(0);
+    this.acceleration.add(this.align(boids).mult(1.2));
+    this.acceleration.add(this.cohere(boids).mult(1.6));
+    this.acceleration.add(this.separate(boids).mult(0.8));
   }
 
   update() {
     this.edges();
+    this.velocity.add(this.acceleration).limit(this.maxSpeed);
     this.position.add(this.velocity);
-    this.velocity.add(this.acceleration);
-    this.acceleration.mult(0);
   }
 
   display() {
-    let angle = this.velocity.heading();
-    fill(currentTheme.boidColor + ", 200");
-    stroke(currentTheme.strokeColor);
-    push();
-    translate(this.position.x, this.position.y);
-    rotate(angle);
-    beginShape();
-    vertex(0, -6);
-    vertex(-4, 6);
-    vertex(4, 6);
-    endShape(CLOSE);
-    pop();
+    noStroke();
+    fill(...currentTheme.boidColor);
+    ellipse(this.position.x, this.position.y, BOID_SIZE, BOID_SIZE);
   }
 }
 
 function setup() {
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent("particles");
-  for (let i = 0; i < numBoids; i++) {
+  for (let i = 0; i < NUM_BOIDS; i++) {
     flock.push(new Boid(random(width), random(height)));
   }
 }
@@ -251,26 +204,37 @@ function setup() {
 function updateTheme(themeName) {
   if (themes[themeName]) {
     currentTheme = themes[themeName];
+    forceClear = true; // Trigger full canvas clear
   }
 }
 
 window.addEventListener("themeChanged", (e) => {
-  updateTheme(e.detail.theme);
+  const now = Date.now();
+  if (now - lastThemeChange > 100) { // Debounce: ignore events within 100ms
+    lastThemeChange = now;
+    updateTheme(e.detail.theme);
+  }
 });
 
 function draw() {
-  background(`rgba(${currentTheme.backgroundColor}, ${currentTheme.backgroundAlpha / 100})`);
+  if (forceClear) {
+    // Fully opaque background to clear previous theme
+    background(...currentTheme.backgroundColor, 255);
+    forceClear = false;
+  } else {
+    // Normal low-alpha background for minimal trails
+    background(...currentTheme.backgroundColor, currentTheme.backgroundAlpha);
+  }
+
   let boundary = new Rectangle(width / 2, height / 2, width / 2, height / 2);
-  let qt = new Quadtree(boundary, 4);
+  let qt = new Quadtree(boundary, QUADTREE_CAPACITY);
   for (let boid of flock) {
-    let point = new Point(boid.position.x, boid.position.y, boid);
-    qt.insert(point);
+    qt.insert(new Point(boid.position.x, boid.position.y, boid));
   }
   for (let boid of flock) {
-    let range = new Rectangle(boid.position.x, boid.position.y, perceptionRadius, perceptionRadius);
-    let points = qt.query(range);
-    let nearbyBoids = points.map(p => p.userData);
-    boid.flock(nearbyBoids);
+    let range = new Rectangle(boid.position.x, boid.position.y, PERCEPTION_RADIUS, PERCEPTION_RADIUS);
+    let nearby = qt.query(range).map(p => p.userData);
+    boid.flock(nearby);
     boid.update();
     boid.display();
   }
