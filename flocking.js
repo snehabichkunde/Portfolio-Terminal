@@ -1,34 +1,31 @@
-// Constants
 const NUM_BOIDS = 200;
-const PERCEPTION_RADIUS = 85;
-const MAX_SPEED = 2;
-const MAX_FORCE = 0.05;
+const PERCEPTION_RADIUS = 60; 
+const MAX_SPEED = 2.5;
+const MAX_FORCE = 0.06;
 const BOID_SIZE = 5;
-const QUADTREE_CAPACITY = 6; // Increased for performance with more boids
-
-// Themes with minimal trail effect
+const QUADTREE_CAPACITY = 4; 
 const themes = {
   dark: {
     boidColor: [200, 220, 240, 140], // Soft blue-gray
     backgroundColor: [20, 20, 40],
-    backgroundAlpha: 3 // Minimal tail
+    backgroundAlpha: 3
   },
   light: {
     boidColor: [220, 230, 245, 140], // Creamy white
     backgroundColor: [240, 245, 255],
-    backgroundAlpha: 3 // Minimal tail
+    backgroundAlpha: 3
   },
   glass: {
     boidColor: [210, 200, 230, 140], // Pale lavender
     backgroundColor: [30, 30, 50],
-    backgroundAlpha: 2 // Minimal tail
+    backgroundAlpha: 2
   }
 };
 
 let flock = [];
 let currentTheme = themes.dark;
-let lastThemeChange = 0;
-let forceClear = false; // Flag to clear canvas on theme change
+let forceClear = false;
+let themeChangeTimeout = null;
 
 class Point {
   constructor(x, y, userData) {
@@ -121,9 +118,15 @@ class Boid {
     this.maxForce = MAX_FORCE;
   }
 
-  edges() {
-    this.position.x = (this.position.x + width) % width;
-    this.position.y = (this.position.y + height) % height;
+  avoidEdges() {
+    let steering = createVector();
+    const margin = 50;
+    const turnForce = 0.05; // Reduced to prevent crowding
+    if (this.position.x < margin) steering.x += turnForce;
+    if (this.position.x > width - margin) steering.x -= turnForce;
+    if (this.position.y < margin) steering.y += turnForce;
+    if (this.position.y > height - margin) steering.y -= turnForce;
+    return steering.limit(this.maxForce);
   }
 
   align(boids) {
@@ -159,10 +162,13 @@ class Boid {
   separate(boids) {
     let steering = createVector();
     let total = 0;
+    const minDistance = BOID_SIZE * 2; // Minimum distance to prevent overlap
     for (let other of boids) {
       let d = this.position.dist(other.position);
       if (other !== this && d < PERCEPTION_RADIUS && d > 0) {
-        let diff = p5.Vector.sub(this.position, other.position).div(d * d);
+        let diff = p5.Vector.sub(this.position, other.position);
+        let scale = d < minDistance ? minDistance / d : 1; // Stronger repulsion if too close
+        diff.div(d * d).mult(scale);
         steering.add(diff);
         total++;
       }
@@ -177,11 +183,11 @@ class Boid {
     this.acceleration.set(0);
     this.acceleration.add(this.align(boids).mult(1.2));
     this.acceleration.add(this.cohere(boids).mult(1.6));
-    this.acceleration.add(this.separate(boids).mult(0.8));
+    this.acceleration.add(this.separate(boids).mult(1.5)); // Increased weight
+    this.acceleration.add(this.avoidEdges());
   }
 
   update() {
-    this.edges();
     this.velocity.add(this.acceleration).limit(this.maxSpeed);
     this.position.add(this.velocity);
   }
@@ -189,7 +195,11 @@ class Boid {
   display() {
     noStroke();
     fill(...currentTheme.boidColor);
-    ellipse(this.position.x, this.position.y, BOID_SIZE, BOID_SIZE);
+    push();
+    translate(this.position.x, this.position.y);
+    rotate(this.velocity.heading() + PI / 2);
+    triangle(-BOID_SIZE / 2, -BOID_SIZE, BOID_SIZE / 2, -BOID_SIZE, 0, BOID_SIZE);
+    pop();
   }
 }
 
@@ -204,25 +214,22 @@ function setup() {
 function updateTheme(themeName) {
   if (themes[themeName]) {
     currentTheme = themes[themeName];
-    forceClear = true; // Trigger full canvas clear
+    forceClear = true;
   }
 }
 
 window.addEventListener("themeChanged", (e) => {
-  const now = Date.now();
-  if (now - lastThemeChange > 100) { // Debounce: ignore events within 100ms
-    lastThemeChange = now;
+  if (themeChangeTimeout) clearTimeout(themeChangeTimeout);
+  themeChangeTimeout = setTimeout(() => {
     updateTheme(e.detail.theme);
-  }
+  }, 100);
 });
 
 function draw() {
   if (forceClear) {
-    // Fully opaque background to clear previous theme
     background(...currentTheme.backgroundColor, 255);
     forceClear = false;
   } else {
-    // Normal low-alpha background for minimal trails
     background(...currentTheme.backgroundColor, currentTheme.backgroundAlpha);
   }
 
