@@ -86,17 +86,114 @@ body {
   flex: 1;
   background: transparent;
   color: #a6e3a1;
-  border: none;
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   line-height: 1.6;
   letter-spacing: 0.5px;
   padding: 16px;
-  resize: none !important;
-  outline: none;
-  caret-color: #a6e3a1;
-  white-space: pre-wrap;
   overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  outline: none;
+  display: flex;
+  flex-direction: column; /* Ensure vertical stacking */
+}
+
+.prompt-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px; /* Space between prompt lines */
+}
+
+.command-line {
+  margin-bottom: 5px; /* Space after executed command */
+  color: #a6e3a1; /* Match prompt color */
+}
+
+#main .prompt {
+  color: #a6e3a1; /* Green for prompt */
+}
+
+#main .input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  caret-color: transparent; /* Hide native caret */
+}
+
+#main .input:empty:before {
+  content: "\200b"; /* Zero-width space for cursor */
+}
+
+#main .input::after {
+  content: "|";
+  animation: blink 1s step-end infinite;
+  margin-left: 2px; /* Slight offset to prevent overlap */
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+#main .output {
+  margin-bottom: 5px; /* Space after output */
+}
+
+#main .header {
+  color: #f9f5d7; /* Light yellow for headers */
+}
+
+#main .command {
+  color: #fab387; /* Orange for commands */
+}
+
+#main .directory {
+  color: #89b4fa; /* Blue for directories */
+}
+
+#main .file {
+  color: #cdd6f4; /* Light gray for files */
+}
+
+#main .error {
+  color: #f38ba8; /* Red for errors */
+}
+
+#main .message {
+  color: #a6e3a1; /* Green for messages */
+}
+
+#main .suggest {
+  color: #f9e2af; /* Yellow for suggestions */
+}
+
+#main .project-name {
+  color: #f9f5d7; /* Light yellow for project names */
+  font-weight: bold;
+}
+
+#main .project-key {
+  color: #89b4fa; /* Blue for project keys */
+}
+
+#main .project-value {
+  color: #cdd6f4; /* Light gray for project values */
+}
+
+#main .link {
+  color: #cba6f7; /* Magenta for clickable links */
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#main .link:hover {
+  text-decoration: underline;
+  color: #f5c2e7; /* Lighter magenta on hover */
 }
 
 #main::-webkit-scrollbar {
@@ -119,7 +216,70 @@ body {
 
 .theme-light #main {
   color: #1a1a1a;
-  caret-color: #1a1a1a;
+}
+
+.theme-light .command-line {
+  color: #2e7d32; /* Dark green */
+}
+
+.theme-light #main .prompt {
+  color: #2e7d32; /* Dark green */
+}
+
+.theme-light #main .input {
+  caret-color: transparent; /* Hide native caret */
+}
+
+.theme-light #main .input::after {
+  color: #1a1a1a; /* Match text color */
+}
+
+.theme-light #main .header {
+  color: #4a2c00; /* Dark brown */
+}
+
+.theme-light #main .command {
+  color: #d73a49; /* Red */
+}
+
+.theme-light #main .directory {
+  color: #1e40af; /* Dark blue */
+}
+
+.theme-light #main .file {
+  color: #444444; /* Dark gray */
+}
+
+.theme-light #main .error {
+  color: #b91c1c; /* Dark red */
+}
+
+.theme-light #main .message {
+  color: #2e7d32; /* Dark green */
+}
+
+.theme-light #main .suggest {
+  color: #b35f00; /* Dark orange */
+}
+
+.theme-light #main .project-name {
+  color: #4a2c00; /* Dark brown */
+}
+
+.theme-light #main .project-key {
+  color: #1e40af; /* Dark blue */
+}
+
+.theme-light #main .project-value {
+  color: #444444; /* Dark gray */
+}
+
+.theme-light #main .link {
+  color: #6b21a8; /* Dark purple */
+}
+
+.theme-light #main .link:hover {
+  color: #9333ea; /* Lighter purple */
 }
 
 .theme-light .terminal-header {
@@ -138,7 +298,70 @@ body {
 
 .theme-glass #main {
   color: #e0e0e0;
-  caret-color: #e0e0e0;
+}
+
+.theme-glass .command-line {
+  color: #94e2d5; /* Cyan */
+}
+
+.theme-glass #main .prompt {
+  color: #94e2d5; /* Cyan */
+}
+
+.theme-glass #main .input {
+  caret-color: transparent; /* Hide native caret */
+}
+
+.theme-glass #main .input::after {
+  color: #e0e0e0; /* Match text color */
+}
+
+.theme-glass #main .header {
+  color: #f5e0dc; /* Light pink */
+}
+
+.theme-glass #main .command {
+  color: #f28fad; /* Pink */
+}
+
+.theme-glass #main .directory {
+  color: #89dceb; /* Light cyan */
+}
+
+.theme-glass #main .file {
+  color: #cdd6f4; /* Light gray */
+}
+
+.theme-glass #main .error {
+  color: #f38ba8; /* Red */
+}
+
+.theme-glass #main .message {
+  color: #94e2d5; /* Cyan */
+}
+
+.theme-glass #main .suggest {
+  color: #f9e2af; /* Yellow */
+}
+
+.theme-glass #main .project-name {
+  color: #f5e0dc; /* Light pink */
+}
+
+.theme-glass #main .project-key {
+  color: #89dceb; /* Light cyan */
+}
+
+.theme-glass #main .project-value {
+  color: #cdd6f4; /* Light gray */
+}
+
+.theme-glass #main .link {
+  color: #cba6f7; /* Magenta */
+}
+
+.theme-glass #main .link:hover {
+  color: #f5c2e7; /* Lighter magenta */
 }
 
 .theme-glass .terminal-header {

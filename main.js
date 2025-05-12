@@ -3,7 +3,6 @@ const terminalPortfolio = (() => {
   let currentPath = "/home/sneha/";
   let commandHistory = [];
   let historyIndex = -1;
-  let projectLinks = { liveLink: null, githubLink: null }; // Store links for click handling
 
   const fileSystem = {
     "/": ["home", "bin", "README.md"],
@@ -291,52 +290,81 @@ Enjoy exploring!
 
   function getPrompt() {
     const pathDisplay = currentPath === "/home/sneha/" ? "~" : currentPath.replace(/^\/|\/$/g, "");
-    return `sneha@portfolio:${pathDisplay}$ `;
+    return `<span class="prompt">sneha@portfolio:${pathDisplay}$ </span>`;
   }
 
   const welcomeMessage = `
-Welcome to Sneha Bichkunde's Portfolio Terminal
----------------------------------------------
-Type 'help' to see available commands.
-Current directory: ${currentPath}
+<span class="header">Welcome to Sneha Bichkunde's Portfolio Terminal</span>
+<span class="header">---------------------------------------------</span>
+Type <span class="command">help</span> to see available commands.
+Current directory: <span class="directory">${currentPath}</span>
 `;
 
   function scrollToBottom() {
     terminal.scrollTop = terminal.scrollHeight;
   }
 
-  function replaceCurrentLine(text) {
-    const lines = terminal.value.split("\n");
-    lines[lines.length - 1] = `${getPrompt()}${text}`;
-    terminal.value = lines.join("\n");
-    scrollToBottom();
-    terminal.setSelectionRange(terminal.value.length, terminal.value.length);
+  function createPrompt() {
+    const previousInput = terminal.querySelector(".input:last-child");
+    if (previousInput) {
+      previousInput.contentEditable = false;
+      previousInput.classList.remove("input");
+    }
+  
+    const promptDiv = document.createElement("div");
+    promptDiv.className = "prompt-line";
+    promptDiv.innerHTML = getPrompt();
+    const inputSpan = document.createElement("span");
+    inputSpan.contentEditable = true;
+    inputSpan.className = "input";
+    inputSpan.setAttribute("spellcheck", "false");
+    promptDiv.appendChild(inputSpan);
+    return promptDiv;
   }
 
   function typeOutput(output, callback) {
-    terminal.value += `\n${output}\n${getPrompt()}`;
+    const outputDiv = document.createElement("div");
+    outputDiv.className = "output";
+    outputDiv.innerHTML = output.replace(/\n/g, "<br>");
+    terminal.appendChild(outputDiv);
+    terminal.appendChild(createPrompt());
     scrollToBottom();
     callback();
   }
 
   function typeWelcomeMessage() {
-    terminal.value = `${welcomeMessage}\n${getPrompt()}`;
+    terminal.innerHTML = welcomeMessage.replace(/\n/g, "<br>");
+    terminal.appendChild(createPrompt());
     scrollToBottom();
-    terminal.setSelectionRange(terminal.value.length, terminal.value.length);
+    focusInput();
+  }
+
+  function focusInput() {
+    const input = terminal.querySelector(".input:last-child");
+    if (input) {
+      input.focus();
+      // Move cursor to end
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(input);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
   }
 
   function formatProject(project) {
-    let output = `${project.name}\n`;
-    output += `  Description: ${project.description}\n`;
-    output += `  Tech: ${project.tech.join(", ")}\n`;
-    output += `  Details:\n${project.details.map(detail => `    - ${detail}`).join("\n")}\n`;
+    let output = `<span class="project-name">${project.name}</span><br>`;
+    output += `  <span class="project-key">Description:</span> <span class="project-value">${project.description}</span><br>`;
+    output += `  <span class="project-key">Tech:</span> <span class="project-value">${project.tech.join(", ")}</span><br>`;
+    output += `  <span class="project-key">Details:</span><br>${project.details.map(detail => `    - <span class="project-value">${detail}</span>`).join("<br>")}<br>`;
     if (project.live_link) {
-      output += `  Live Demo\n`;
+      output += `  <a href="${project.live_link.url}" class="link" target="_blank">Live Demo</a><br>`;
     }
     if (project.github) {
-      output += `  GitHub\n`;
+      output += `  <a href="${project.github.url}" class="link" target="_blank">GitHub</a>`;
     }
-    return { text: output.trim(), liveLink: project.live_link?.url, githubLink: project.github?.url };
+    return output.trim();
   }
 
   function parseExpression(expr) {
@@ -398,7 +426,7 @@ Current directory: ${currentPath}
 
       return evaluate(tokens);
     } catch (e) {
-      return `calc: ${e.message || "Invalid expression"}`;
+      return `<span class="error">calc: ${e.message || "Invalid expression"}</span>`;
     }
   }
 
@@ -412,43 +440,52 @@ Current directory: ${currentPath}
       diff += Math.abs(input.length - cmd.length);
       return diff <= 2;
     });
-    return suggestion ? `\nDid you mean '${suggestion}'?` : "";
+    return suggestion ? `<br><span class="suggest">Did you mean '<span class="command">${suggestion}</span>'?</span>` : "";
   }
 
   const commands = {
     help: () => `
-Available Commands:
--------------------
-help         - Show available commands
-clear        - Clear the terminal screen
-ls           - List directories and files
-cd <dir>     - Change directory or view file content
-cd ..        - Go back
-getgithub    - Open GitHub profile
-getlinkedin  - Open LinkedIn profile
-getcv        - View CV (coming soon)
-play <game>  - Play a game (snake, tictactoe, etc.)
-theme <name> - Switch theme (dark, light, glass)
-calc <expr>  - Calculate expression (e.g., 2+3*4)
-pwd          - Print working directory
-whoami       - Show current user
-echo         - Display text or variables
-man          - Show command manual
-history      - Show command history
-fortune      - Get a random quote
-stats        - Show command usage statistics
+<span class="header">Available Commands:</span>
+<span class="header">-------------------</span>
+<span class="command">help</span>         - Show available commands
+<span class="command">clear</span>        - Clear the terminal screen
+<span class="command">ls</span>           - List directories and files
+<span class="command">cd</span> &lt;dir&gt;     - Change directory or view file content
+<span class="command">cd ..</span>        - Go back
+<span class="command">getgithub</span>    - Open GitHub profile
+<span class="command">getlinkedin</span>  - Open LinkedIn profile
+<span class="command">getcv</span>        - View CV (coming soon)
+<span class="command">play</span> &lt;game&gt;  - Play a game (snake, tictactoe, etc.)
+<span class="command">theme</span> &lt;name&gt; - Switch theme (dark, light, glass)
+<span class="command">calc</span> &lt;expr&gt;  - Calculate expression (e.g., 2+3*4)
+<span class="command">pwd</span>          - Print working directory
+<span class="command">whoami</span>       - Show current user
+<span class="command">echo</span>         - Display text or variables
+<span class="command">man</span>          - Show command manual
+<span class="command">history</span>      - Show command history
+<span class="command">fortune</span>      - Get a random quote
+<span class="command">stats</span>        - Show command usage statistics
     `,
     clear: () => {
-      terminal.value = `${getPrompt()}`;
+      terminal.innerHTML = "";
+      terminal.appendChild(createPrompt());
       scrollToBottom();
-      projectLinks = { liveLink: null, githubLink: null }; // Reset links
+      focusInput();
       return null;
     },
-    ls: () => fileSystem[currentPath]?.join(" ") || "dir: No such directory.",
+    ls: () => {
+      const items = fileSystem[currentPath];
+      if (!items) return `<span class="error">dir: No such directory.</span>`;
+      return items
+        .map(item => {
+          const fullPath = currentPath === "/" ? `/${item}` : `${currentPath}${item}`;
+          const isDir = fileSystem[`${fullPath}/`] || fileSystem[fullPath];
+          return `<span class="${isDir ? 'directory' : 'file'}">${item}</span>`;
+        })
+        .join(" ");
+    },
     cd: (args) => {
       let output = "";
-      projectLinks = { liveLink: null, githubLink: null }; // Reset links
-
       if (!args[0] || args[0] === "~") {
         currentPath = "/home/sneha/";
       } else if (args[0].startsWith("/")) {
@@ -456,13 +493,13 @@ stats        - Show command usage statistics
         if (fileSystem[targetPath]) {
           currentPath = targetPath;
         } else {
-          return `cd: ${args[0]}: No such directory.`;
+          return `<span class="error">cd: ${args[0]}: No such directory.</span>`;
         }
       } else if (args[0] === "..") {
         if (currentPath !== "/") {
           currentPath = currentPath.split("/").slice(0, -2).join("/") + "/" || "/";
         } else {
-          return "Already at root.";
+          return `<span class="error">Already at root.</span>`;
         }
       } else {
         const targetPath = currentPath === "/" ? `/${args[0]}` : `${currentPath}${args[0]}`;
@@ -472,75 +509,72 @@ stats        - Show command usage statistics
         } else if (fileContent[targetPath]) {
           if (targetPath === "/home/sneha/projects") {
             const projects = JSON.parse(fileContent[targetPath]).projects;
-            output = projects.map(proj => formatProject(proj).text).join("\n\n");
+            output = projects.map(formatProject).join("<br><br>");
           } else {
             const content = JSON.parse(fileContent[targetPath].trim());
             if (content.redirect) {
               window.open(content.redirect, "_blank");
-              output = content.message;
+              output = `<span class="message">${content.message}</span>`;
             } else if (content.name && content.description) {
-              const formatted = formatProject(content);
-              output = formatted.text;
-              projectLinks.liveLink = formatted.liveLink;
-              projectLinks.githubLink = formatted.githubLink;
+              output = formatProject(content);
             } else {
-              output = JSON.stringify(content, null, 2);
+              output = JSON.stringify(content, null, 2).replace(/\n/g, "<br>");
             }
           }
         } else {
-          return `cd: ${args[0]}: No such file or directory.`;
+          return `<span class="error">cd: ${args[0]}: No such file or directory.</span>`;
         }
       }
       return output;
     },
     getgithub: () => {
       window.open("https://github.com/snehabichkunde", "_blank");
-      return fileContent["/home/sneha/getgithub"].trim();
+      return `<span class="message">${fileContent["/home/sneha/getgithub"].trim()}</span>`;
     },
     getlinkedin: () => {
       window.open("https://www.linkedin.com/in/sneha-bichkunde-aba203269/", "_blank");
-      return fileContent["/home/sneha/getlinkedin"].trim();
+      return `<span class="message">${fileContent["/home/sneha/getlinkedin"].trim()}</span>`;
     },
-    getcv: () => fileContent["/home/sneha/getcv"].trim(),
+    getcv: () => `<span class="message">${fileContent["/home/sneha/getcv"].trim()}</span>`,
     play: (args) => {
       if (fileSystem["/home/sneha/games"]?.includes(args[0])) {
-        return fileContent[`/home/sneha/games/${args[0]}`]?.trim() || `Launching ${args[0]}... (Game not implemented yet)`;
+        return `<span class="message">${fileContent[`/home/sneha/games/${args[0]}`]?.trim() || `Launching ${args[0]}... (Game not implemented yet)`}</span>`;
       }
-      return `play: ${args[0] || ""}: Game not found.`;
+      return `<span class="error">play: ${args[0] || ""}: Game not found.</span>`;
     },
     theme: (args) => {
       if (["dark", "light", "glass"].includes(args[0])) {
         document.body.className = `theme-${args[0]}`;
         localStorage.setItem("theme", args[0]);
         window.dispatchEvent(new CustomEvent("themeChanged", { detail: { theme: args[0] } }));
-        return `Theme switched to ${args[0]}`;
+        return `<span class="message">Theme switched to ${args[0]}</span>`;
       }
-      return `theme: ${args[0] || ""}: Invalid theme. Use dark, light, or glass.`;
+      return `<span class="error">theme: ${args[0] || ""}: Invalid theme. Use dark, light, or glass.</span>`;
     },
     calc: (args) => parseExpression(args.join("")),
-    pwd: () => currentPath,
-    whoami: () => "sneha",
-    echo: (args) => args[0] === "$USER" ? "sneha" : args.join(" "),
+    pwd: () => `<span class="directory">${currentPath}</span>`,
+    whoami: () => `<span class="message">sneha</span>`,
+    echo: (args) => `<span class="message">${args[0] === "$USER" ? "sneha" : args.join(" ")}</span>`,
     man: (args) => {
       if (args[0] && Object.keys(commands).includes(args[0])) {
-        return `man ${args[0]}: Displays help for the ${args[0]} command.\nSee 'help' for details.`;
+        return `<span class="message">man ${args[0]}: Displays help for the ${args[0]} command.<br>See '<span class="command">help</span>' for details.</span>`;
       }
-      return `man: ${args[0] || ""}: No manual entry found.`;
+      return `<span class="error">man: ${args[0] || ""}: No manual entry found.</span>`;
     },
-    history: () => commandHistory.map((cmd, i) => `${i + 1}  ${cmd}`).join("\n") || "No command history.",
+    history: () => commandHistory.map((cmd, i) => `<span class="message">${i + 1}  ${cmd}</span>`).join("<br>") || `<span class="message">No command history.</span>`,
     fortune: () => {
       const fortunes = [
         "You will write a killer portfolio app!",
         "A bug is just a feature in disguise.",
         "Keep coding, the universe is watching."
       ];
-      return fortunes[Math.floor(Math.random() * fortunes.length)];
+      return `<span class="message">${fortunes[Math.floor(Math.random() * fortunes.length)]}</span>`;
     },
     stats: () => {
       const usage = JSON.parse(localStorage.getItem("commandUsage") || "{}");
       return Object.entries(usage)
-        .map(([cmd, count]) => `${cmd}: ${count} time${count === 1 ? "" : "s"}`)
-        .join("\n") || "No command usage recorded.";
+        .map(([cmd, count]) => `<span class="message">${cmd}: ${count} time${count === 1 ? "" : "s"}</span>`)
+        .join("<br>") || `<span class="message">No command usage recorded.</span>`;
     }
   };
 
@@ -549,105 +583,20 @@ stats        - Show command usage statistics
     cls: "clear"
   };
 
-  terminal.addEventListener("input", () => {
-    const prompt = getPrompt();
-    const lines = terminal.value.split("\n");
-    const lastLine = lines[lines.length - 1];
-    if (!lastLine.startsWith(prompt)) {
-      lines[lines.length - 1] = prompt + lastLine.slice(prompt.length);
-      terminal.value = lines.join("\n");
-      terminal.setSelectionRange(terminal.value.length, terminal.value.length);
-    }
-  });
-
-  terminal.addEventListener("click", (e) => {
-    if (!projectLinks.liveLink && !projectLinks.githubLink) return;
-
-    const lines = terminal.value.split("\n");
-    const cursorPos = terminal.selectionStart;
-    let currentLine = 0;
-    let posInLine = cursorPos;
-
-    // Find the line where the cursor is
-    for (let i = 0; i < lines.length; i++) {
-      const lineLength = lines[i].length + 1; // +1 for newline
-      if (posInLine < lineLength) {
-        currentLine = i;
-        break;
-      }
-      posInLine -= lineLength;
-    }
-
-    const lineText = lines[currentLine].trim();
-    if (lineText === "Live Demo" && projectLinks.liveLink) {
-      e.preventDefault();
-      window.open(projectLinks.liveLink, "_blank");
-    } else if (lineText === "GitHub" && projectLinks.githubLink) {
-      e.preventDefault();
-      window.open(projectLinks.githubLink, "_blank");
-    }
-  });
+  terminal.addEventListener("click", focusInput);
 
   terminal.addEventListener("keydown", (e) => {
-    const lines = terminal.value.split("\n");
-    const lastLine = lines[lines.length - 1];
-    const prompt = getPrompt();
-    const inputStart = terminal.value.lastIndexOf(prompt) + prompt.length;
-
-    if (terminal.selectionStart < inputStart && e.key !== "Enter" && e.key !== "Tab") {
-      e.preventDefault();
-      terminal.setSelectionRange(terminal.value.length, terminal.value.length);
-      return;
-    }
-
-    if (e.key === "ArrowUp" && !e.ctrlKey) {
-      e.preventDefault();
-      if (historyIndex > 0) {
-        historyIndex--;
-        replaceCurrentLine(commandHistory[historyIndex]);
-      } else if (commandHistory.length > 0 && historyIndex === -1) {
-        historyIndex = commandHistory.length - 1;
-        replaceCurrentLine(commandHistory[historyIndex]);
-      }
-    }
-
-    if (e.key === "ArrowDown" && !e.ctrlKey) {
-      e.preventDefault();
-      if (historyIndex >= 0 && historyIndex < commandHistory.length - 1) {
-        historyIndex++;
-        replaceCurrentLine(commandHistory[historyIndex]);
-      } else {
-        replaceCurrentLine("");
-        historyIndex = -1;
-      }
-    }
-
-    if (e.key === "Tab") {
-      e.preventDefault();
-      const input = lastLine.replace(prompt, "").trim();
-      const [command, ...args] = input.split(" ");
-      if (!args[0]) {
-        const commandsList = Object.keys(commands);
-        const matches = commandsList.filter(cmd => cmd.startsWith(command));
-        if (matches.length === 1) {
-          replaceCurrentLine(`${matches[0]} `);
-        }
-      } else if (command === "cd") {
-        const matches = fileSystem[currentPath]?.filter(item => item.startsWith(args[0])) || [];
-        if (matches.length === 1) {
-          replaceCurrentLine(`cd ${matches[0]}`);
-        }
-      }
-    }
+    const input = terminal.querySelector(".input:last-child");
+    if (!input) return;
 
     if (e.key === "Enter") {
       e.preventDefault();
-      let input = lastLine.replace(prompt, "").trim();
-      let [command, ...args] = input.split(" ");
+      const inputText = input.textContent.trim();
+      let [command, ...args] = inputText.split(" ");
       let output = "";
 
-      if (input !== "") {
-        commandHistory.push(input);
+      if (inputText !== "") {
+        commandHistory.push(inputText);
         if (commandHistory.length > 100) commandHistory.shift();
         const usage = JSON.parse(localStorage.getItem("commandUsage") || "{}");
         usage[command] = (usage[command] || 0) + 1;
@@ -655,9 +604,10 @@ stats        - Show command usage statistics
       }
       historyIndex = -1;
 
-      if (input === "") {
-        terminal.value += `\n${prompt}`;
+      if (inputText === "") {
+        terminal.appendChild(createPrompt());
         scrollToBottom();
+        focusInput();
         return;
       }
 
@@ -665,37 +615,86 @@ stats        - Show command usage statistics
         command = aliases[command];
       }
 
-      if (input.includes("|")) {
-        output = "bash: Pipelines are not supported in this portfolio terminal.";
-      } else if (input.includes(">")) {
-        const [cmd, file] = input.split(">");
-        output = `bash: Output redirected to ${file.trim()} (not implemented).`;
+      if (inputText.includes("|")) {
+        output = `<span class="error">bash: Pipelines are not supported in this portfolio terminal.</span>`;
+      } else if (inputText.includes(">")) {
+        const [cmd, file] = inputText.split(">");
+        output = `<span class="error">bash: Output redirected to ${file.trim()} (not implemented).</span>`;
       } else {
         if (commands[command]) {
           output = commands[command](args);
         } else {
-          output = `bash: ${command}: command not found${suggestCommand(command)}`;
+          output = `<span class="error">bash: ${command}: command not found</span>${suggestCommand(command)}`;
           if (["sudo", "apt", "yum"].includes(command)) {
-            output += "\nThis is a portfolio terminal, not a real system!";
+            output += `<br><span class="error">This is a portfolio terminal, not a real system!</span>`;
           }
         }
       }
 
       if (output !== null) {
         typeOutput(output, () => {
-          terminal.setSelectionRange(terminal.value.length, terminal.value.length);
+          focusInput();
         });
       }
     }
+
+    if (e.key === "ArrowUp" && !e.ctrlKey) {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        historyIndex--;
+        input.textContent = commandHistory[historyIndex];
+      } else if (commandHistory.length > 0 && historyIndex === -1) {
+        historyIndex = commandHistory.length - 1;
+        input.textContent = commandHistory[historyIndex];
+      }
+      focusInput();
+    }
+
+    if (e.key === "ArrowDown" && !e.ctrlKey) {
+      e.preventDefault();
+      if (historyIndex >= 0 && historyIndex < commandHistory.length - 1) {
+        historyIndex++;
+        input.textContent = commandHistory[historyIndex];
+      } else {
+        input.textContent = "";
+        historyIndex = -1;
+      }
+      focusInput();
+    }
+
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const inputText = input.textContent.trim();
+      const [command, ...args] = inputText.split(" ");
+      if (!args[0]) {
+        const commandsList = Object.keys(commands);
+        const matches = commandsList.filter(cmd => cmd.startsWith(command));
+        if (matches.length === 1) {
+          input.textContent = `${matches[0]} `;
+        }
+      } else if (command === "cd") {
+        const matches = fileSystem[currentPath]?.filter(item => item.startsWith(args[0])) || [];
+        if (matches.length === 1) {
+          input.textContent = `cd ${matches[0]}`;
+        }
+      }
+      focusInput();
+    }
+  });
+
+  // Prevent pasting HTML content
+  terminal.addEventListener("paste", (e) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData("text/plain");
+    document.execCommand("insertText", false, text);
   });
 
   return {
     init: () => {
-      terminal.value = "";
+      terminal.innerHTML = "";
       const savedTheme = localStorage.getItem("theme") || "dark";
       document.body.className = `theme-${savedTheme}`;
       typeWelcomeMessage();
-      terminal.focus();
     }
   };
 })();
