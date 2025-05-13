@@ -396,7 +396,9 @@ Current directory: <span class="directory">${currentPath}</span>
 
         while (tokens.includes("+") || tokens.includes("-")) {
           let i = tokens.indexOf("+") !== -1 ? tokens.indexOf("+") : tokens.indexOf("-");
-          let a = parseFloat(tokens[i - 1]);
+          let a ="며"
+
+System: parseFloat(tokens[i - 1]);
           let b = parseFloat(tokens[i + 1]);
           if (isNaN(a) || isNaN(b)) throw new Error("Invalid number");
           let result = tokens[i] === "+" ? a + b : a - b;
@@ -450,14 +452,14 @@ Current directory: <span class="directory">${currentPath}</span>
 <span class="command">help</span>         - Show available commands
 <span class="command">clear</span>        - Clear the terminal screen
 <span class="command">ls</span>           - List directories and files
-<span class="command">cd</span> &lt;dir&gt;     - Change directory or view file content
+<span class="command">cd</span>           - Change directory or view file content
 <span class="command">cd ..</span>        - Go back
 <span class="command">getgithub</span>    - Open GitHub profile
 <span class="command">getlinkedin</span>  - Open LinkedIn profile
 <span class="command">getcv</span>        - View CV (coming soon)
-<span class="command">play</span> &lt;game&gt;  - Play a game (snake, tictactoe, etc.)
-<span class="command">theme</span> &lt;name&gt; - Switch theme (dark, light, glass)
-<span class="command">calc</span> &lt;expr&gt;  - Calculate expression (e.g., 2+3*4)
+<span class="command">play</span> <game>        - Play a game (snake, tictactoe, etc.)
+<span class="command">theme</span> <name>       - Switch theme (dark, light, glass)
+<span class="command">calc</span> <expr>        - Calculate expression (e.g., 2+3*4)
 <span class="command">pwd</span>          - Print working directory
 <span class="command">whoami</span>       - Show current user
 <span class="command">echo</span>         - Display text or variables
@@ -557,7 +559,7 @@ Current directory: <span class="directory">${currentPath}</span>
     echo: (args) => `<span class="message">${args[0] === "$USER" ? "sneha" : args.join(" ")}</span>`,
     man: (args) => {
       if (args[0] && Object.keys(commands).includes(args[0])) {
-        return `<span class="message">man ${args[0]}: Displays help for the ${args[0]} command.<br>See '<span class="command">help</span>' for details.</span>`;
+        return `<span class="message">man ${args[0]}: Displays help for the ${args[0]}-command.<br>See '<span class="command">help</span>' for details.</span>`;
       }
       return `<span class="error">man: ${args[0] || ""}: No manual entry found.</span>`;
     },

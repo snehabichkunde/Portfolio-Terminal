@@ -122,17 +122,12 @@ body {
   font-family: inherit;
   font-size: inherit;
   outline: none;
-  caret-color: transparent; /* Hide native caret */
+  caret-color: #a6e3a1; /* Visible caret */
+  position: relative;
 }
 
 #main .input:empty:before {
   content: "\200b"; /* Zero-width space for cursor */
-}
-
-#main .input::after {
-  content: "|";
-  animation: blink 1s step-end infinite;
-  margin-left: 2px; /* Slight offset to prevent overlap */
 }
 
 @keyframes blink {
@@ -227,11 +222,7 @@ body {
 }
 
 .theme-light #main .input {
-  caret-color: transparent; /* Hide native caret */
-}
-
-.theme-light #main .input::after {
-  color: #1a1a1a; /* Match text color */
+  caret-color: #2e7d32; /* Visible caret */
 }
 
 .theme-light #main .header {
@@ -309,11 +300,7 @@ body {
 }
 
 .theme-glass #main .input {
-  caret-color: transparent; /* Hide native caret */
-}
-
-.theme-glass #main .input::after {
-  color: #e0e0e0; /* Match text color */
+  caret-color: #94e2d5; /* Visible caret */
 }
 
 .theme-glass #main .header {
