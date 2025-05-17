@@ -96,22 +96,22 @@ body {
   word-wrap: break-word;
   outline: none;
   display: flex;
-  flex-direction: column; /* Ensure vertical stacking */
+  flex-direction: column;
 }
 
 .prompt-line {
   display: flex;
   align-items: center;
-  margin-bottom: 5px; /* Space between prompt lines */
+  margin-bottom: 5px;
 }
 
 .command-line {
-  margin-bottom: 5px; /* Space after executed command */
-  color: #a6e3a1; /* Match prompt color */
+  margin-bottom: 5px;
+  color: #a6e3a1;
 }
 
 #main .prompt {
-  color: #a6e3a1; /* Green for prompt */
+  color: #a6e3a1;
 }
 
 #main .input {
@@ -122,12 +122,12 @@ body {
   font-family: inherit;
   font-size: inherit;
   outline: none;
-  caret-color: #a6e3a1; /* Visible caret */
+  caret-color: #a6e3a1;
   position: relative;
 }
 
 #main .input:empty:before {
-  content: "\200b"; /* Zero-width space for cursor */
+  content: "\200b";
 }
 
 @keyframes blink {
@@ -136,59 +136,59 @@ body {
 }
 
 #main .output {
-  margin-bottom: 5px; /* Space after output */
+  margin-bottom: 5px;
 }
 
 #main .header {
-  color: #f9f5d7; /* Light yellow for headers */
+  color: #f9f5d7;
 }
 
 #main .command {
-  color: #fab387; /* Orange for commands */
+  color: #fab387;
 }
 
 #main .directory {
-  color: #89b4fa; /* Blue for directories */
+  color: #89b4fa;
 }
 
 #main .file {
-  color: #cdd6f4; /* Light gray for files */
+  color: #cdd6f4;
 }
 
 #main .error {
-  color: #f38ba8; /* Red for errors */
+  color: #f38ba8;
 }
 
 #main .message {
-  color: #a6e3a1; /* Green for messages */
+  color: #a6e3a1;
 }
 
 #main .suggest {
-  color: #f9e2af; /* Yellow for suggestions */
+  color: #f9e2af;
 }
 
 #main .project-name {
-  color: #f9f5d7; /* Light yellow for project names */
+  color: #f9f5d7;
   font-weight: bold;
 }
 
 #main .project-key {
-  color: #89b4fa; /* Blue for project keys */
+  color: #89b4fa;
 }
 
 #main .project-value {
-  color: #cdd6f4; /* Light gray for project values */
+  color: #cdd6f4;
 }
 
 #main .link {
-  color: #cba6f7; /* Magenta for clickable links */
+  color: #cba6f7;
   text-decoration: none;
   cursor: pointer;
 }
 
 #main .link:hover {
   text-decoration: underline;
-  color: #f5c2e7; /* Lighter magenta on hover */
+  color: #f5c2e7;
 }
 
 #main::-webkit-scrollbar {
@@ -214,63 +214,63 @@ body {
 }
 
 .theme-light .command-line {
-  color: #2e7d32; /* Dark green */
+  color: #2e7d32;
 }
 
 .theme-light #main .prompt {
-  color: #2e7d32; /* Dark green */
+  color: #2e7d32;
 }
 
 .theme-light #main .input {
-  caret-color: #2e7d32; /* Visible caret */
+  caret-color: #2e7d32;
 }
 
 .theme-light #main .header {
-  color: #4a2c00; /* Dark brown */
+  color: #4a2c00;
 }
 
 .theme-light #main .command {
-  color: #d73a49; /* Red */
+  color: #d73a49;
 }
 
 .theme-light #main .directory {
-  color: #1e40af; /* Dark blue */
+  color: #1e40af;
 }
 
 .theme-light #main .file {
-  color: #444444; /* Dark gray */
+  color: #444444;
 }
 
 .theme-light #main .error {
-  color: #b91c1c; /* Dark red */
+  color: #b91c1c;
 }
 
 .theme-light #main .message {
-  color: #2e7d32; /* Dark green */
+  color: #2e7d32;
 }
 
 .theme-light #main .suggest {
-  color: #b35f00; /* Dark orange */
+  color: #b35f00;
 }
 
 .theme-light #main .project-name {
-  color: #4a2c00; /* Dark brown */
+  color: #4a2c00;
 }
 
 .theme-light #main .project-key {
-  color: #1e40af; /* Dark blue */
+  color: #1e40af;
 }
 
 .theme-light #main .project-value {
-  color: #444444; /* Dark gray */
+  color: #444444;
 }
 
 .theme-light #main .link {
-  color: #6b21a8; /* Dark purple */
+  color: #6b21a8;
 }
 
 .theme-light #main .link:hover {
-  color: #9333ea; /* Lighter purple */
+  color: #9333ea;
 }
 
 .theme-light .terminal-header {
@@ -279,84 +279,6 @@ body {
 
 .theme-light .terminal-title {
   color: #333;
-}
-
-.theme-glass .terminal-wrapper {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.theme-glass #main {
-  color: #e0e0e0;
-}
-
-.theme-glass .command-line {
-  color: #94e2d5; /* Cyan */
-}
-
-.theme-glass #main .prompt {
-  color: #94e2d5; /* Cyan */
-}
-
-.theme-glass #main .input {
-  caret-color: #94e2d5; /* Visible caret */
-}
-
-.theme-glass #main .header {
-  color: #f5e0dc; /* Light pink */
-}
-
-.theme-glass #main .command {
-  color: #f28fad; /* Pink */
-}
-
-.theme-glass #main .directory {
-  color: #89dceb; /* Light cyan */
-}
-
-.theme-glass #main .file {
-  color: #cdd6f4; /* Light gray */
-}
-
-.theme-glass #main .error {
-  color: #f38ba8; /* Red */
-}
-
-.theme-glass #main .message {
-  color: #94e2d5; /* Cyan */
-}
-
-.theme-glass #main .suggest {
-  color: #f9e2af; /* Yellow */
-}
-
-.theme-glass #main .project-name {
-  color: #f5e0dc; /* Light pink */
-}
-
-.theme-glass #main .project-key {
-  color: #89dceb; /* Light cyan */
-}
-
-.theme-glass #main .project-value {
-  color: #cdd6f4; /* Light gray */
-}
-
-.theme-glass #main .link {
-  color: #cba6f7; /* Magenta */
-}
-
-.theme-glass #main .link:hover {
-  color: #f5c2e7; /* Lighter magenta */
-}
-
-.theme-glass .terminal-header {
-  background: linear-gradient(to bottom, #444, #333);
-}
-
-.theme-glass .terminal-title {
-  color: #e0e0e0;
 }
 
 @media (max-width: 768px) {
@@ -380,3 +302,4 @@ body {
     padding: 10px;
   }
 }
+
