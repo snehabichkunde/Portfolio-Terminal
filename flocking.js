@@ -1,24 +1,35 @@
 const NUM_BOIDS = 200;
-const PERCEPTION_RADIUS = 60; 
+const PERCEPTION_RADIUS = 60;
 const MAX_SPEED = 2.5;
 const MAX_FORCE = 0.06;
 const BOID_SIZE = 5;
-const QUADTREE_CAPACITY = 4; 
+const QUADTREE_CAPACITY = 4;
+
 const themes = {
   dark: {
-    boidColor: [200, 220, 240, 140], // Soft blue-gray
+    boidColor: [200, 220, 240, 160],
     backgroundColor: [20, 20, 40],
-    backgroundAlpha: 3
+    backgroundAlpha: 4
   },
   light: {
-    boidColor: [220, 230, 245, 140], // Creamy white
-    backgroundColor: [240, 245, 255],
-    backgroundAlpha: 3
+    boidColor: [220, 230, 245, 160],
+    backgroundColor: [245, 245, 255],
+    backgroundAlpha: 4
   },
   glass: {
-    boidColor: [210, 200, 230, 140], // Pale lavender
+    boidColor: [210, 200, 230, 160],
     backgroundColor: [30, 30, 50],
-    backgroundAlpha: 2
+    backgroundAlpha: 3
+  },
+  matrix: {
+    boidColor: [0, 255, 0, 160],
+    backgroundColor: [10, 10, 10],
+    backgroundAlpha: 4
+  },
+  hello_kitty: {
+    boidColor: [255, 182, 193, 160], // Light pink
+    backgroundColor: [255, 245, 247],
+    backgroundAlpha: 4
   }
 };
 
@@ -26,6 +37,8 @@ let flock = [];
 let currentTheme = themes.dark;
 let forceClear = false;
 let themeChangeTimeout = null;
+let digitalRain = [];
+let bows = [];
 
 class Point {
   constructor(x, y, userData) {
@@ -109,6 +122,55 @@ class Quadtree {
   }
 }
 
+class RainDrop {
+  constructor() {
+    this.x = random(width);
+    this.y = random(-height, 0);
+    this.speed = random(5, 15);
+    this.length = random(10, 20);
+  }
+  update() {
+    this.y += this.speed;
+    if (this.y > height) this.y = random(-height, 0);
+  }
+  display() {
+    stroke(0, 255, 0, 100);
+    line(this.x, this.y, this.x, this.y + this.length);
+  }
+}
+
+class Bow {
+  constructor() {
+    this.x = random(width);
+    this.y = random(-height, 0);
+    this.speed = random(1, 3);
+    this.size = random(8, 12);
+    this.alpha = random(60, 120);
+    this.angle = random(TWO_PI);
+    this.spin = random(-0.05, 0.05);
+  }
+  update() {
+    this.y += this.speed;
+    this.angle += this.spin;
+    if (this.y > height) this.y = random(-height, 0);
+  }
+  display() {
+    noStroke();
+    fill(255, 105, 180, this.alpha); // Pink bows
+    push();
+    translate(this.x, this.y);
+    rotate(this.angle);
+    beginShape();
+    vertex(-this.size / 2, 0);
+    bezierVertex(-this.size / 2, -this.size / 2, -this.size / 4, -this.size / 2, 0, 0);
+    bezierVertex(this.size / 4, -this.size / 2, this.size / 2, -this.size / 2, this.size / 2, 0);
+    bezierVertex(this.size / 2, this.size / 2, this.size / 4, this.size / 2, 0, 0);
+    bezierVertex(-this.size / 4, this.size / 2, -this.size / 2, this.size / 2, -this.size / 2, 0);
+    endShape(CLOSE);
+    pop();
+  }
+}
+
 class Boid {
   constructor(x, y) {
     this.position = createVector(x, y);
@@ -121,7 +183,7 @@ class Boid {
   avoidEdges() {
     let steering = createVector();
     const margin = 50;
-    const turnForce = 0.05; // Reduced to prevent crowding
+    const turnForce = 0.05;
     if (this.position.x < margin) steering.x += turnForce;
     if (this.position.x > width - margin) steering.x -= turnForce;
     if (this.position.y < margin) steering.y += turnForce;
@@ -162,12 +224,12 @@ class Boid {
   separate(boids) {
     let steering = createVector();
     let total = 0;
-    const minDistance = BOID_SIZE * 2; // Minimum distance to prevent overlap
+    const minDistance = BOID_SIZE * 2;
     for (let other of boids) {
       let d = this.position.dist(other.position);
       if (other !== this && d < PERCEPTION_RADIUS && d > 0) {
         let diff = p5.Vector.sub(this.position, other.position);
-        let scale = d < minDistance ? minDistance / d : 1; // Stronger repulsion if too close
+        let scale = d < minDistance ? minDistance / d : 1;
         diff.div(d * d).mult(scale);
         steering.add(diff);
         total++;
@@ -183,7 +245,7 @@ class Boid {
     this.acceleration.set(0);
     this.acceleration.add(this.align(boids).mult(1.2));
     this.acceleration.add(this.cohere(boids).mult(1.6));
-    this.acceleration.add(this.separate(boids).mult(1.5)); // Increased weight
+    this.acceleration.add(this.separate(boids).mult(1.5));
     this.acceleration.add(this.avoidEdges());
   }
 
@@ -198,7 +260,19 @@ class Boid {
     push();
     translate(this.position.x, this.position.y);
     rotate(this.velocity.heading() + PI / 2);
-    triangle(-BOID_SIZE / 2, -BOID_SIZE, BOID_SIZE / 2, -BOID_SIZE, 0, BOID_SIZE);
+    if (currentTheme === themes.hello_kitty) {
+      // Rounder, cuter boids
+      ellipse(0, 0, BOID_SIZE * 1.2, BOID_SIZE * 1.2);
+    } else if (currentTheme === themes.matrix) {
+      // Matrix trailing effect
+      stroke(0, 255, 0, 50);
+      strokeWeight(1);
+      line(0, BOID_SIZE, 0, BOID_SIZE * 2);
+      noStroke();
+      triangle(-BOID_SIZE / 2, -BOID_SIZE, BOID_SIZE / 2, -BOID_SIZE, 0, BOID_SIZE);
+    } else {
+      triangle(-BOID_SIZE / 2, -BOID_SIZE, BOID_SIZE / 2, -BOID_SIZE, 0, BOID_SIZE);
+    }
     pop();
   }
 }
@@ -208,6 +282,12 @@ function setup() {
   canvas.parent("particles");
   for (let i = 0; i < NUM_BOIDS; i++) {
     flock.push(new Boid(random(width), random(height)));
+  }
+  for (let i = 0; i < 50; i++) {
+    digitalRain.push(new RainDrop());
+  }
+  for (let i = 0; i < 15; i++) {
+    bows.push(new Bow());
   }
 }
 
@@ -231,6 +311,18 @@ function draw() {
     forceClear = false;
   } else {
     background(...currentTheme.backgroundColor, currentTheme.backgroundAlpha);
+  }
+
+  if (currentTheme === themes.matrix) {
+    for (let drop of digitalRain) {
+      drop.update();
+      drop.display();
+    }
+  } else if (currentTheme === themes.hello_kitty) {
+    for (let bow of bows) {
+      bow.update();
+      bow.display();
+    }
   }
 
   let boundary = new Rectangle(width / 2, height / 2, width / 2, height / 2);

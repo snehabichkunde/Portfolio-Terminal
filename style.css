@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+body, .terminal-wrapper, #main, .terminal-header, .terminal-title, .circle {
+  transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
+}
+
 body {
   margin: 0;
   padding: 20px;
@@ -303,3 +307,122 @@ body {
   }
 }
 
+/* Matrix Theme */
+.theme-matrix .terminal-wrapper {
+  background: rgba(10, 10, 10, 0.95);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+}
+.theme-matrix #main {
+  color: #00ff00;
+}
+.theme-matrix .command-line {
+  color: #00cc00;
+}
+.theme-matrix #main .prompt {
+  color: #00cc00;
+}
+.theme-matrix #main .input {
+  caret-color: #00ff00;
+}
+.theme-matrix #main .header {
+  color: #00ff99;
+}
+.theme-matrix #main .command {
+  color: #00ffcc;
+}
+.theme-matrix #main .directory {
+  color: #00ccff;
+}
+.theme-matrix #main .file {
+  color: #00ff00;
+}
+.theme-matrix #main .error {
+  color: #ff3333;
+}
+.theme-matrix #main .message {
+  color: #00cc00;
+}
+.theme-matrix #main .suggest {
+  color: #00ff99;
+}
+.theme-matrix #main .project-name {
+  color: #00ff99;
+}
+.theme-matrix #main .project-key {
+  color: #00ccff;
+}
+.theme-matrix #main .project-value {
+  color: #00ff00;
+}
+.theme-matrix #main .link {
+  color: #00ffcc;
+}
+.theme-matrix #main .link:hover {
+  color: #00ffff;
+}
+.theme-matrix .terminal-header {
+  background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+}
+.theme-matrix .terminal-title {
+  color: #00ff00;
+}
+
+/* Hello Kitty Theme */
+.theme-hello_kitty .terminal-wrapper {
+  background: rgba(255, 245, 247, 0.95);
+  border: 1px solid rgba(255, 182, 193, 0.3);
+}
+.theme-hello_kitty #main {
+  color: #ff69b4;
+}
+.theme-hello_kitty .command-line {
+  color: #ff1493;
+}
+.theme-hello_kitty #main .prompt {
+  color: #ff1493;
+}
+.theme-hello_kitty #main .input {
+  caret-color: #ff69b4;
+}
+.theme-hello_kitty #main .header {
+  color: #c71585;
+}
+.theme-hello_kitty #main .command {
+  color: #ff4500;
+}
+.theme-hello_kitty #main .directory {
+  color: #ffb6c1;
+}
+.theme-hello_kitty #main .file {
+  color: #ff69b4;
+}
+.theme-hello_kitty #main .error {
+  color: #dc143c;
+}
+.theme-hello_kitty #main .message {
+  color: #ff1493;
+}
+.theme-hello_kitty #main .suggest {
+  color: #c71585;
+}
+.theme-hello_kitty #main .project-name {
+  color: #c71585;
+}
+.theme-hello_kitty #main .project-key {
+  color: #ffb6c1;
+}
+.theme-hello_kitty #main .project-value {
+  color: #ff69b4;
+}
+.theme-hello_kitty #main .link {
+  color: #ff4500;
+}
+.theme-hello_kitty #main .link:hover {
+  color: #ff6347;
+}
+.theme-hello_kitty .terminal-header {
+  background: linear-gradient(to bottom, #ffe4e1, #ffc1cc);
+}
+.theme-hello_kitty .terminal-title {
+  color: #ff69b4;
+}

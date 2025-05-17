@@ -37,7 +37,7 @@ const terminalPortfolio = (() => {
     "/home/sneha/getgithub": [],
     "/home/sneha/getlinkedin": [],
     "/home/sneha/getcv": [],
-    "/home/sneha/themes": ["dark", "light", "glass"]
+    "/home/sneha/themes":["dark", "light", "glass", "matrix", "hello_kitty"],
   };
 
   const fileContent = {
@@ -64,7 +64,9 @@ const terminalPortfolio = (() => {
     "/home/sneha/themes": `{"available_themes":["dark","light","glass"],"description":"Use 'theme <name>' to switch themes."}`,
     "/home/sneha/themes/dark": `{"name":"Dark","description":"A dark theme with soft green text and a sleek, modern look.","command":"theme dark"}`,
     "/home/sneha/themes/light": `{"name":"Light","description":"A bright theme with dark text, ideal for daytime use.","command":"theme light"}`,
-    "/home/sneha/themes/glass": `{"name":"Glass","description":"A frosted-glass effect with light text for a futuristic vibe.","command":"theme glass"}`
+    "/home/sneha/themes/glass": `{"name":"Glass","description":"A frosted-glass effect with light text for a futuristic vibe.","command":"theme glass"}`,
+    "/home/sneha/themes/matrix": `{"name":"Matrix","description":"A cyberpunk theme with green digital rain and dark accents.","command":"theme matrix"}`,
+  "/home/sneha/themes/hello_kitty": `{"name":"Hello Kitty","description":"A cute, pastel theme inspired by Hello Kitty with pink and white tones.","command":"theme hello_kitty"}`
   };
 
   function getPrompt() {
@@ -271,13 +273,13 @@ Current directory: <span class="directory">${currentPath}</span>
       return `<span class="error">play: ${args[0] || ""}: Game not found.</span>`;
     },
     theme: (args) => {
-      if (["dark", "light", "glass"].includes(args[0])) {
+      if (["dark", "light", "glass", "matrix", "hello_kitty"].includes(args[0])) {
         document.body.className = `theme-${args[0]}`;
         localStorage.setItem("theme", args[0]);
         window.dispatchEvent(new CustomEvent("themeChanged", { detail: { theme: args[0] } }));
         return `<span class="message">Theme switched to ${args[0]}</span>`;
       }
-      return `<span class="error">theme: ${args[0] || ""}: Invalid theme. Use dark, light, or glass.</span>`;
+      return `<span class="error">theme: ${args[0] || ""}: Invalid theme. Use dark, light, glass, matrix, or hello_kitty.</span>`;
     },
     echo: (args) => `<span class="message">${args[0] === "$USER" ? "sneha" : args.join(" ")}</span>`,
     history: () => commandHistory.map((cmd, i) => `<span class="message">${i + 1}  ${cmd}</span>`).join("<br>") || `<span class="message">No command history.</span>`
