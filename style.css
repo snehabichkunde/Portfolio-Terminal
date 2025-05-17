@@ -130,6 +130,13 @@ body {
   position: relative;
 }
 
+.note {
+  color: #888;
+  font-style: italic;
+  display: block;
+  margin-top: 5px;
+}
+
 #main .input:empty:before {
   content: "\200b";
 }

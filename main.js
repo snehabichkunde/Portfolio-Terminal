@@ -184,7 +184,7 @@ Current directory: <span class="directory">${currentPath}</span>
 <span class="command">help</span>         - Show available commands
 <span class="command">clear</span>        - Clear the terminal screen
 <span class="command">ls</span>           - List directories and files
-<span class="command">cd</span>           - Change directory or view file content
+<span class="command">cd &lt;dir&gt;</span>     - Change directory or view file content
 <span class="command">cd ..</span>        - Go back
 <span class="command">getgithub</span>    - Open GitHub profile
 <span class="command">getlinkedin</span>  - Open LinkedIn profile
@@ -193,6 +193,8 @@ Current directory: <span class="directory">${currentPath}</span>
 <span class="command">theme</span> <name>       - Switch theme (dark, light, glass)
 <span class="command">echo</span>         - Display text or variables
 <span class="command">history</span>      - Show command history
+<span class="note">Note : ↑ ↓ to scroll through privously used commands
+      Tab to auto-complete</span>
     `,
     clear: () => {
       terminal.innerHTML = "";
