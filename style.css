@@ -433,3 +433,56 @@ body {
 .theme-hello_kitty .terminal-title {
   color: #ff69b4;
 }
+
+/* Default theme (dark) */
+#main .profile-name {
+  color: #f9f5d7; /* Same as project-name */
+  font-weight: bold;
+}
+
+#main .profile-key {
+  color: #89b4fa; /* Same as project-key */
+}
+
+#main .profile-value {
+  color: #cdd6f4; /* Same as project-value */
+}
+
+/* Light theme */
+.theme-light #main .profile-name {
+  color: #4a2c00; /* Same as project-name */
+}
+
+.theme-light #main .profile-key {
+  color: #1e40af; /* Same as project-key */
+}
+
+.theme-light #main .profile-value {
+  color: #444444; /* Same as project-value */
+}
+
+/* Matrix theme */
+.theme-matrix #main .profile-name {
+  color: #00ff99; /* Same as project-name */
+}
+
+.theme-matrix #main .profile-key {
+  color: #00ccff; /* Same as project-key */
+}
+
+.theme-matrix #main .profile-value {
+  color: #00ff00; /* Same as project-value */
+}
+
+/* Hello Kitty theme */
+.theme-hello_kitty #main .profile-name {
+  color: #c71585; /* Same as project-name */
+}
+
+.theme-hello_kitty #main .profile-key {
+  color: #ffb6c1; /* Same as project-key */
+}
+
+.theme-hello_kitty #main .profile-value {
+  color: #ff69b4; /* Same as project-value */
+}

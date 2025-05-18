@@ -52,7 +52,26 @@ const terminalPortfolio = (() => {
     "/home/sneha/projects/digital_diary": `{"name":"Digital Diary","description":"Developed a full-stack diary app to securely store and manage personal stories.","tech":["React.js","Node.js","MongoDB","JWT"],"details":["Built frontend with React.js and backend with Node.js/Express.js, using MongoDB for storage","Implemented JWT authentication to protect user data and enable secure logins","Deployed on Netlify and Render, supporting 100+ user requests with zero downtime"],"live_link":{"text":"Live Demo","url":"https://digital-diary-sneha.netlify.app/"},"github":{"text":"GitHub","url":"https://github.com/snehabichkunde/DigitalDiary"}}`,
     "/home/sneha/projects/my_shell": `{"name":"my_shell","description":"Designed a POSIX-compliant shell in C to enhance terminal interaction.","tech":["C","ncurses"],"details":["Developed an interactive REPL with ncurses, improving navigation and feedback","Integrated command history and process management for efficient workflows"],"github":{"text":"GitHub","url":"https://github.com/snehabichkunde/c-shell"}}`,
     "/home/sneha/projects/boids_flocking": `{"name":"Boids Flocking","description":"Created a flocking simulation in p5.js to model bird-like behavior efficiently.","tech":["p5.js","JavaScript"],"details":["Optimized neighbor detection with a Quadtree, reducing complexity from O(n^2) to O(n log n)","Enhanced real-time performance for smooth rendering of 100+ boids"],"live_link":{"text":"Live Demo","url":"https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/"},"github":{"text":"GitHub","url":"https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree"}}`,
-    "/home/sneha/coding_profiles": `{"profiles":[{"name":"GFG","link":{"text":"GFG Profile","url":"https://www.geeksforgeeks.org/user/bichkund5ad6/"}},{"name":"LeetCode","link":{"text":"LeetCode Profile","url":"https://leetcode.com/u/SnehaBichkunde/"}}]}`,
+"/home/sneha/coding_profiles": `{
+  "profiles": [
+    {
+      "name": "GeeksforGeeks",
+      "description": "Active contributor with 50+ problems solved in Data Structures and Algorithms.",
+      "link": {
+        "text": "GFG Profile",
+        "url": "https://www.geeksforgeeks.org/user/bichkund5ad6/"
+      }
+    },
+    {
+      "name": "LeetCode",
+      "description": "Solved 100+ problems, focusing on algorithms and system design challenges.",
+      "link": {
+        "text": "LeetCode Profile",
+        "url": "https://leetcode.com/u/SnehaBichkunde/"
+      }
+    }
+  ]
+}`,   
     "/home/sneha/getgithub": `{"redirect":"https://github.com/snehabichkunde","message":"Redirecting to GitHub profile..."}`,
     "/home/sneha/getlinkedin": `{"redirect":"https://www.linkedin.com/in/sneha-bichkunde-aba203269/","message":"Redirecting to LinkedIn profile..."}`,
     "/home/sneha/getcv": `{"message":"CV functionality coming soon!"}`,
@@ -240,6 +259,9 @@ Current directory: <span class="directory">${currentPath}</span>
           if (targetPath === "/home/sneha/projects") {
             const projects = JSON.parse(fileContent[targetPath]).projects;
             output = projects.map(formatProject).join("<br><br>");
+          } else if (targetPath === "/home/sneha/coding_profiles") {
+            const profiles = JSON.parse(fileContent[targetPath]).profiles;
+            output = profiles.map(formatCodingProfile).join("<br><br>");
           } else {
             const content = JSON.parse(fileContent[targetPath].trim());
             if (content.redirect) {
@@ -390,6 +412,14 @@ Current directory: <span class="directory">${currentPath}</span>
       focusInput();
     }
   });
+  function formatCodingProfile(profile) {
+    let output = `<span class="profile-name">${profile.name}</span><br>`;
+    output += `  <span class="profile-key">Description:</span> <span class="profile-value">${profile.description}</span><br>`;
+    if (profile.link) {
+      output += `  <a href="${profile.link.url}" class="link" target="_blank">${profile.link.text}</a>`;
+    }
+    return output.trim();
+  }
 
   terminal.addEventListener("paste", (e) => {
     e.preventDefault();
