@@ -5,7 +5,11 @@ const terminalPortfolio = (() => {
 
   const content = {
     about: `{"name":"Sneha Bichkunde","email":"bichkundesneha@gmail.com","city":"Nanded","education":"B.Tech in Information Technology (8.3 GPA), SGGS Nanded","fun_fact":"I love exploring systems through terminal commands!"}`,
-    passions: `{"reading":"Drama, Philosophy, Travel Journals","sports":"Cycling, Badminton","programming":"Data Structures & Algorithms, C++, System Design"}`,
+    hobbies: `{"reading":"Drama, Philosophy, Travel Journals","sports":"Cycling, Badminton","programming":"Data Structures & Algorithms, C++, System Design"}`,
+    interests: `{"interests":"Backend Development, System Programming, Distributed Systems"}`,
+    technical_skills: `{"languages":"C, C++, JavaScript","tools":"Git, GitHub, Docker, VS Code, Bash, GDB, Makefile","frameworks":"Node.js, Express.js, React.js, Socket.io","databases":"MongoDB, MySQL","soft_skills":"Problem-solving, Teamwork, Communication, Time Management"}`,
+    coding_profiles: `{"GeeksforGeeks":"Active contributor with 500+ problems solved in Data Structures and Algorithms, https://www.geeksforgeeks.org/user/bichkund5ad6/","LeetCode":"Solved 100+ problems, focusing on algorithms and system design challenges, https://leetcode.com/u/SnehaBichkunde/"}`,
+    coursework: `{"coursework":"Operating Systems, Data Structures & Algorithms, DBMS, Computer Networks"}`,
     projects: `[
       {
         "name": "Digital Diary",
@@ -28,18 +32,6 @@ const terminalPortfolio = (() => {
         "github": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree"
       }
     ]`,
-    profiles: `[
-      {
-        "name": "GeeksforGeeks",
-        "description": "Active contributor with 50+ problems solved in Data Structures and Algorithms.",
-        "url": "https://www.geeksforgeeks.org/user/bichkund5ad6/"
-      },
-      {
-        "name": "LeetCode",
-        "description": "Solved 100+ problems, focusing on algorithms and system design challenges.",
-        "url": "https://leetcode.com/u/SnehaBichkunde/"
-      }
-    ]`,
     github: `{"url":"https://github.com/snehabichkunde","message":"Opening GitHub profile..."}`,
     linkedin: `{"url":"https://www.linkedin.com/in/sneha-bichkunde-aba203269/","message":"Opening LinkedIn profile..."}`,
     cv: `{"message":"CV functionality coming soon!"}`
@@ -50,11 +42,12 @@ const terminalPortfolio = (() => {
   }
 
   const welcomeMessage = `
-<span class="header">Welcome to Sneha Bichkunde's Portfolio!</span>
-Type <span class="command">help</span> to display available commands.
-To validate each command, press Enter.
-You can use the Tab key to help you complete a command.
-You can find old commands with the up and down arrows.
+<span class="header">Hello! I'm Sneha Bichkunde 👋</span>
+Welcome to my interactive portfolio terminal! Type <span class="command">help</span> to see what I can share with you.
+- Press <span class="command">Enter</span> to run a command
+- Use <span class="command">Tab</span> to auto-complete commands
+- Use <span class="command">↑↓</span> arrows to browse command history
+<span class="note">Try starting with <span class="command">about-me</span> to know more about me!</span>
 `;
 
   function scrollToBottom() {
@@ -109,35 +102,43 @@ You can find old commands with the up and down arrows.
   }
 
   function formatProject(project) {
-    let output = `<span class="project-name">${project.name}</span><br>`;
-    output += `<span class="project-value">${project.description}</span><br>`;
-    output += `<span class="project-value">Tech: ${project.tech}</span><br>`;
+    let output = `<div class="project-container">`;
+    output += `<span class="project-name">${project.name}</span><br>`;
+    output += `<span class="project-description">${project.description}</span><br>`;
+    output += `<span class="project-tech">Tech: ${project.tech}</span><br>`;
+    output += `<div class="project-links">`;
     if (project.link) {
-      output += `<a href="${project.link}" class="link" target="_blank">Visit project</a><br>`;
+      output += `<a href="${project.link}" class="link" target="_blank">Live Demo</a>`;
     }
     if (project.github) {
       output += `<a href="${project.github}" class="link" target="_blank">GitHub</a>`;
     }
-    return output.trim();
+    output += `</div></div>`;
+    return output;
   }
 
-  function formatProfile(profile) {
-    let output = `<span class="profile-name">${profile.name}</span><br>`;
-    output += `<span class="profile-value">${profile.description}</span><br>`;
-    output += `<a href="${profile.url}" class="link" target="_blank">Visit profile</a>`;
-    return output.trim();
-  }
-
-  function formatCustomJSON(obj) {
-    const indent = "  ";
-    let output = "{\n";
+  function formatLibrarySection(obj, title) {
+    let output = `<div class="library-container">`;
+    output += `<span class="library-title">${title}</span><br>`;
     const keys = Object.keys(obj);
-    keys.forEach((key, index) => {
-      const value = obj[key];
-      const isLast = index === keys.length - 1;
-      output += `${indent}"${key}": "${value}"${isLast ? "" : ","}\n`;
+    keys.forEach((key) => {
+      let value = obj[key];
+      let link = null;
+      // Check if the value contains a URL (for coding-profiles)
+      if (typeof value === "string" && value.includes("http")) {
+        const [description, url] = value.split(", ");
+        value = description;
+        link = url;
+      }
+      output += `<div class="library-item">`;
+      output += `<span class="library-key">${key.replace(/_/g, " ")}:</span>`;
+      output += `<span class="library-value">${value}</span>`;
+      if (link) {
+        output += `<a href="${link}" class="library-link" target="_blank">[Visit]</a>`;
+      }
+      output += `</div>`;
     });
-    output += "}";
+    output += `</div>`;
     return output;
   }
 
@@ -156,18 +157,31 @@ You can find old commands with the up and down arrows.
 
   const commands = {
     help: () => `
-<span class="header">Available Commands:</span>
+<span class="header">Available Commands</span>
+
+<span class="suggest">About Me & Work</span>
 - <span class="command">about-me</span>: Display information about me
-- <span class="command">clear</span>: Clean the terminal
+- <span class="command">my-projects</span>: Display the list of my personal projects
+- <span class="command">technical-skills</span>: Display my technical and soft skills
+- <span class="command">coursework</span>: Display my relevant coursework
 - <span class="command">getcv</span>: Download my CV
-- <span class="command">getlinkedin</span>: Link to my LinkedIn
+
+<span class="suggest">Profiles</span>
 - <span class="command">getgithub</span>: Link to my GitHub
-- <span class="command">help</span>: Displays the list of commands
-- <span class="command">passions</span>: Displays the list of my hobbies
-- <span class="command">my-projects</span>: Displays the list of my personal projects
+- <span class="command">getlinkedin</span>: Link to my LinkedIn
+- <span class="command">coding-profiles</span>: Display my coding profiles
+
+<span class="suggest">Personal Interests</span>
+- <span class="command">hobbies</span>: Display my hobbies
+- <span class="command">interests</span>: Display my areas of interest
+<span class="suggest">Utilities</span>
+- <span class="command">help</span>: Display this list of commands
+- <span class="command">history</span>: Show command history
+- <span class="command">clear</span>: Clean the terminal
 - <span class="command">themes</span>: Change the terminal theme
-You can find the old commands with the up and down arrows
-    `,
+
+<span class="note">Use ↑↓ arrows to browse command history, Tab to auto-complete</span>
+`,
     clear: () => {
       terminal.innerHTML = "";
       terminal.appendChild(createPrompt());
@@ -175,17 +189,39 @@ You can find the old commands with the up and down arrows
       focusInput();
       return null;
     },
+    history: () => {
+      if (commandHistory.length === 0) {
+        return `<span class="message">No command history yet.</span>`;
+      }
+      return commandHistory.map((cmd, i) => `<span class="message">${i + 1}. ${cmd}</span>`).join("<br>");
+    },
     "about-me": () => {
       const about = JSON.parse(content.about);
-      return formatCustomJSON(about).replace(/\n/g, "<br>");
+      return formatLibrarySection(about, "About Me");
     },
-    passions: () => {
-      const passions = JSON.parse(content.passions);
-      return formatCustomJSON(passions).replace(/\n/g, "<br>");
+    hobbies: () => {
+      const hobbies = JSON.parse(content.hobbies);
+      return formatLibrarySection(hobbies, "Hobbies");
+    },
+    interests: () => {
+      const interests = JSON.parse(content.interests);
+      return formatLibrarySection(interests, "Interests");
+    },
+    "technical-skills": () => {
+      const skills = JSON.parse(content.technical_skills);
+      return formatLibrarySection(skills, "Technical Skills");
+    },
+    "coding-profiles": () => {
+      const profiles = JSON.parse(content.coding_profiles);
+      return formatLibrarySection(profiles, "Coding Profiles");
+    },
+    coursework: () => {
+      const coursework = JSON.parse(content.coursework);
+      return formatLibrarySection(coursework, "Coursework");
     },
     "my-projects": () => {
       const projects = JSON.parse(content.projects);
-      return projects.map(formatProject).join("<br><br>");
+      return projects.map(formatProject).join("");
     },
     getcv: () => `<span class="message">${JSON.parse(content.cv).message}</span>`,
     getgithub: () => {

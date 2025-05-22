@@ -89,7 +89,7 @@ body {
 #main {
   flex: 1;
   background: transparent;
-  color: #a6e3a1;
+  color: #a6e3a1; /* Primary text color */
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   line-height: 1.6;
@@ -115,7 +115,7 @@ body {
 }
 
 #main .prompt {
-  color: #a6e3a1;
+  color: #a6e3a1; /* Prompt color */
 }
 
 #main .input {
@@ -131,7 +131,7 @@ body {
 }
 
 .note {
-  color: #888;
+  color: #888; /* Instructions/note color */
   font-style: italic;
   display: block;
   margin-top: 5px;
@@ -151,55 +151,110 @@ body {
 }
 
 #main .header {
-  color: #f9f5d7;
+  color: #f9f5d7; /* Header color */
 }
 
 #main .command {
-  color: #fab387;
-}
-
-#main .directory {
-  color: #89b4fa;
-}
-
-#main .file {
-  color: #cdd6f4;
+  color: #fab387; /* Command color */
 }
 
 #main .error {
-  color: #f38ba8;
+  color: #f38ba8; /* Error color */
 }
 
 #main .message {
-  color: #a6e3a1;
+  color: #a6e3a1; /* Primary text/message color */
 }
 
 #main .suggest {
-  color: #f9e2af;
+  color: #f9e2af; /* Suggestion color */
+}
+
+/* Project Styling */
+#main .project-container {
+  margin: 10px 0;
+  padding: 8px;
+  border-left: 3px solid #fab387; /* Border color for project container */
 }
 
 #main .project-name {
-  color: #f9f5d7;
+  color: #f9f5d7; /* Project name color */
   font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 5px;
 }
 
-#main .project-key {
-  color: #89b4fa;
+#main .project-description {
+  color: #cdd6f4; /* Description color */
+  margin: 5px 0;
 }
 
-#main .project-value {
-  color: #cdd6f4;
+#main .project-tech {
+  color: #89b4fa; /* Tech stack color */
+  font-style: italic;
+  margin: 5px 0;
+}
+
+#main .project-links {
+  margin-top: 5px;
 }
 
 #main .link {
-  color: #cba6f7;
+  color: #cba6f7; /* Link color */
   text-decoration: none;
   cursor: pointer;
+  margin-right: 15px;
 }
 
 #main .link:hover {
   text-decoration: underline;
-  color: #f5c2e7;
+  color: #f5c2e7; /* Link hover color */
+}
+
+/* Library-Inspired Styling for About, Hobbies, etc. */
+#main .library-container {
+  margin: 10px 0;
+  padding: 10px;
+  background: rgba(255, 245, 220, 0.1); /* Parchment-like background */
+  border-left: 4px solid #8b4513; /* Warm brown border, library-inspired */
+  border-radius: 4px;
+}
+
+#main .library-title {
+  color: #f9f5d7; /* Warm title color */
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+#main .library-item {
+  margin: 5px 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#main .library-key {
+  color: #d4a017; /* Golden key color */
+  font-weight: bold;
+  margin-right: 10px;
+  min-width: 150px; /* Ensures alignment */
+}
+
+#main .library-value {
+  color: #e6d5b8; /* Soft off-white value color */
+  flex: 1;
+}
+
+#main .library-link {
+  color: #cba6f7; /* Link color */
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#main .library-link:hover {
+  text-decoration: underline;
+  color: #f5c2e7; /* Link hover color */
 }
 
 #main::-webkit-scrollbar {
@@ -215,13 +270,14 @@ body {
   border-radius: 4px;
 }
 
+/* Light Theme */
 .theme-light .terminal-wrapper {
   background: rgba(240, 240, 240, 0.95);
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .theme-light #main {
-  color: #1a1a1a;
+  color: #1a1a1a; /* Primary text color */
 }
 
 .theme-light .command-line {
@@ -229,7 +285,7 @@ body {
 }
 
 .theme-light #main .prompt {
-  color: #2e7d32;
+  color: #2e7d32; /* Prompt color */
 }
 
 .theme-light #main .input {
@@ -237,51 +293,76 @@ body {
 }
 
 .theme-light #main .header {
-  color: #4a2c00;
+  color: #4a2c00; /* Header color */
 }
 
 .theme-light #main .command {
-  color: #d73a49;
-}
-
-.theme-light #main .directory {
-  color: #1e40af;
-}
-
-.theme-light #main .file {
-  color: #444444;
+  color: #d73a49; /* Command color */
 }
 
 .theme-light #main .error {
-  color: #b91c1c;
+  color: #b91c1c; /* Error color */
 }
 
 .theme-light #main .message {
-  color: #2e7d32;
+  color: #2e7d32; /* Primary text/message color */
 }
 
 .theme-light #main .suggest {
-  color: #b35f00;
+  color: #b35f00; /* Suggestion color */
+}
+
+.theme-light #main .project-container {
+  border-left: 3px solid #d73a49; /* Border color for project container */
 }
 
 .theme-light #main .project-name {
-  color: #4a2c00;
+  color: #4a2c00; /* Project name color */
 }
 
-.theme-light #main .project-key {
-  color: #1e40af;
+.theme-light #main .project-description {
+  color: #444444; /* Description color */
 }
 
-.theme-light #main .project-value {
-  color: #444444;
+.theme-light #main .project-tech {
+  color: #1e40af; /* Tech stack color */
+}
+
+.theme-light #main .project-links {
+  margin-top: 5px;
 }
 
 .theme-light #main .link {
-  color: #6b21a8;
+  color: #6b21a8; /* Link color */
 }
 
 .theme-light #main .link:hover {
-  color: #9333ea;
+  color: #9333ea; /* Link hover color */
+}
+
+.theme-light #main .library-container {
+  background: rgba(220, 210, 180, 0.3); /* Lighter parchment background */
+  border-left: 4px solid #5c4033; /* Darker brown border */
+}
+
+.theme-light #main .library-title {
+  color: #4a2c00; /* Warm title color */
+}
+
+.theme-light #main .library-key {
+  color: #8b5a2b; /* Softer brown key color */
+}
+
+.theme-light #main .library-value {
+  color: #333333; /* Darker value color for contrast */
+}
+
+.theme-light #main .library-link {
+  color: #6b21a8; /* Link color */
+}
+
+.theme-light #main .library-link:hover {
+  color: #9333ea; /* Link hover color */
 }
 
 .theme-light .terminal-header {
@@ -290,6 +371,261 @@ body {
 
 .theme-light .terminal-title {
   color: #333;
+}
+
+.theme-light .note {
+  color: #666; /* Instructions/note color */
+}
+
+/* Matrix Theme */
+.theme-matrix .terminal-wrapper {
+  background: rgba(10, 10, 10, 0.95);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.theme-matrix #main {
+  color: #00ff00; /* Primary text color */
+}
+
+.theme-matrix .command-line {
+  color: #00cc00;
+}
+
+.theme-matrix #main .prompt {
+  color: #00cc00; /* Prompt color */
+}
+
+.theme-matrix #main .input {
+  caret-color: #00ff00;
+}
+
+.theme-matrix #main .header {
+  color: #00ff99; /* Header color */
+}
+
+.theme-matrix #main .command {
+  color: #00ffcc; /* Command color */
+}
+
+.theme-matrix #main .error {
+  color: #ff3333; /* Error color */
+}
+
+.theme-matrix #main .message {
+  color: #00cc00; /* Primary text/message color */
+}
+
+.theme-matrix #main .suggest {
+  color: #00ff99; /* Suggestion color */
+}
+
+.theme-matrix #main .project-container {
+  border-left: 3px solid #00ffcc; /* Border color for project container */
+}
+
+.theme-matrix #main .project-name {
+  color: #00ff99; /* Project name color */
+}
+
+.theme-matrix #main .project-description {
+  color: #00ff00; /* Description color */
+}
+
+.theme-matrix #main .project-tech {
+  color: #00ccff; /* Tech stack color */
+}
+
+.theme-matrix #main .project-links {
+  margin-top: 5px;
+}
+
+.theme-matrix #main .link {
+  color: #00ffcc; /* Link color */
+}
+
+.theme-matrix #main .link:hover {
+  color: #00ffff; /* Link hover color */
+}
+
+.theme-matrix #main .library-container {
+  background: rgba(0, 255, 0, 0.1); /* Green-tinted background */
+  border-left: 4px solid #00cc00; /* Green border */
+}
+
+.theme-matrix #main .library-title {
+  color: #00ff99; /* Bright green title */
+}
+
+.theme-matrix #main .library-key {
+  color: #00ffcc; /* Light green key */
+}
+
+.theme-matrix #main .library-value {
+  color: #00ff00; /* Standard green value */
+}
+
+.theme-matrix #main .library-link {
+  color: #00ffcc; /* Link color */
+}
+
+.theme-matrix #main .library-link:hover {
+  color: #00ffff; /* Link hover color */
+}
+
+.theme-matrix .terminal-header {
+  background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+}
+
+.theme-matrix .terminal-title {
+  color: #00ff00;
+}
+
+.theme-matrix .note {
+  color: #008800; /* Instructions/note color */
+}
+
+/* Hello Kitty Theme */
+.theme-hello_kitty .terminal-wrapper {
+  background: rgba(255, 245, 247, 0.95);
+  border: 1px solid rgba(255, 182, 193, 0.3);
+}
+
+.theme-hello_kitty #main {
+  color: #ff69b4; /* Primary text color */
+}
+
+.theme-hello_kitty .command-line {
+  color: #ff1493;
+}
+
+.theme-hello_kitty #main .prompt {
+  color: #ff1493; /* Prompt color */
+}
+
+.theme-hello_kitty #main .input {
+  caret-color: #ff69b4;
+}
+
+.theme-hello_kitty #main .header {
+  color: #c71585; /* Header color */
+}
+
+.theme-hello_kitty #main .command {
+  color: #ff4500; /* Command color */
+}
+
+.theme-hello_kitty #main .error {
+  color: #dc143c; /* Error color */
+}
+
+.theme-hello_kitty #main .message {
+  color: #ff1493; /* Primary text/message color */
+}
+
+.theme-hello_kitty #main .suggest {
+  color: #c71585; /* Suggestion color */
+}
+
+.theme-hello_kitty #main .project-container {
+  border-left: 3px solid #ff4500; /* Border color for project container */
+}
+
+.theme-hello_kitty #main .project-name {
+  color: #c71585; /* Project name color */
+}
+
+.theme-hello_kitty #main .project-description {
+  color: #ff69b4; /* Description color */
+}
+
+.theme-hello_kitty #main .project-tech {
+  color: #ffb6c1; /* Tech stack color */
+}
+
+.theme-hello_kitty #main .project-links {
+  margin-top: 5px;
+}
+
+.theme-hello_kitty #main .link {
+  color: #ff4500; /* Link color */
+}
+
+.theme-hello_kitty #main .link:hover {
+  color: #ff6347; /* Link hover color */
+}
+
+.theme-hello_kitty #main .library-container {
+  background: rgba(255, 220, 220, 0.2); /* Soft pink background */
+  border-left: 4px solid #ff69b4; /* Pink border */
+}
+
+.theme-hello_kitty #main .library-title {
+  color: #c71585; /* Bright pink title */
+}
+
+.theme-hello_kitty #main .library-key {
+  color: #ff4500; /* Warm orange key */
+}
+
+.theme-hello_kitty #main .library-value {
+  color: #ff69b4; /* Standard pink value */
+}
+
+.theme-hello_kitty #main .library-link {
+  color: #ff4500; /* Link color */
+}
+
+.theme-hello_kitty #main .library-link:hover {
+  color: #ff6347; /* Link hover color */
+}
+
+.theme-hello_kitty .terminal-header {
+  background: linear-gradient(to bottom, #ffe4e1, #ffc1cc);
+}
+
+.theme-hello_kitty .terminal-title {
+  color: #ff69b4;
+}
+
+.theme-hello_kitty .note {
+  color: #ff77a9; /* Instructions/note color */
+}
+
+/* Default theme (dark) */
+#main .profile-name {
+  color: #f9f5d7; /* Same as project-name */
+  font-weight: bold;
+}
+
+#main .profile-value {
+  color: #cdd6f4; /* Same as project-value */
+}
+
+/* Light theme */
+.theme-light #main .profile-name {
+  color: #4a2c00; /* Same as project-name */
+}
+
+.theme-light #main .profile-value {
+  color: #444444; /* Same as project-value */
+}
+
+/* Matrix theme */
+.theme-matrix #main .profile-name {
+  color: #00ff99; /* Same as project-name */
+}
+
+.theme-matrix #main .profile-value {
+  color: #00ff00; /* Same as project-value */
+}
+
+/* Hello Kitty theme */
+.theme-hello_kitty #main .profile-name {
+  color: #c71585; /* Same as project-name */
+}
+
+.theme-hello_kitty #main .profile-value {
+  color: #ff69b4; /* Same as project-value */
 }
 
 @media (max-width: 768px) {
@@ -312,177 +648,4 @@ body {
     font-size: 12px;
     padding: 10px;
   }
-}
-
-/* Matrix Theme */
-.theme-matrix .terminal-wrapper {
-  background: rgba(10, 10, 10, 0.95);
-  border: 1px solid rgba(0, 255, 0, 0.2);
-}
-.theme-matrix #main {
-  color: #00ff00;
-}
-.theme-matrix .command-line {
-  color: #00cc00;
-}
-.theme-matrix #main .prompt {
-  color: #00cc00;
-}
-.theme-matrix #main .input {
-  caret-color: #00ff00;
-}
-.theme-matrix #main .header {
-  color: #00ff99;
-}
-.theme-matrix #main .command {
-  color: #00ffcc;
-}
-.theme-matrix #main .directory {
-  color: #00ccff;
-}
-.theme-matrix #main .file {
-  color: #00ff00;
-}
-.theme-matrix #main .error {
-  color: #ff3333;
-}
-.theme-matrix #main .message {
-  color: #00cc00;
-}
-.theme-matrix #main .suggest {
-  color: #00ff99;
-}
-.theme-matrix #main .project-name {
-  color: #00ff99;
-}
-.theme-matrix #main .project-key {
-  color: #00ccff;
-}
-.theme-matrix #main .project-value {
-  color: #00ff00;
-}
-.theme-matrix #main .link {
-  color: #00ffcc;
-}
-.theme-matrix #main .link:hover {
-  color: #00ffff;
-}
-.theme-matrix .terminal-header {
-  background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
-}
-.theme-matrix .terminal-title {
-  color: #00ff00;
-}
-
-/* Hello Kitty Theme */
-.theme-hello_kitty .terminal-wrapper {
-  background: rgba(255, 245, 247, 0.95);
-  border: 1px solid rgba(255, 182, 193, 0.3);
-}
-.theme-hello_kitty #main {
-  color: #ff69b4;
-}
-.theme-hello_kitty .command-line {
-  color: #ff1493;
-}
-.theme-hello_kitty #main .prompt {
-  color: #ff1493;
-}
-.theme-hello_kitty #main .input {
-  caret-color: #ff69b4;
-}
-.theme-hello_kitty #main .header {
-  color: #c71585;
-}
-.theme-hello_kitty #main .command {
-  color: #ff4500;
-}
-.theme-hello_kitty #main .directory {
-  color: #ffb6c1;
-}
-.theme-hello_kitty #main .file {
-  color: #ff69b4;
-}
-.theme-hello_kitty #main .error {
-  color: #dc143c;
-}
-.theme-hello_kitty #main .message {
-  color: #ff1493;
-}
-.theme-hello_kitty #main .suggest {
-  color: #c71585;
-}
-.theme-hello_kitty #main .project-name {
-  color: #c71585;
-}
-.theme-hello_kitty #main .project-key {
-  color: #ffb6c1;
-}
-.theme-hello_kitty #main .project-value {
-  color: #ff69b4;
-}
-.theme-hello_kitty #main .link {
-  color: #ff4500;
-}
-.theme-hello_kitty #main .link:hover {
-  color: #ff6347;
-}
-.theme-hello_kitty .terminal-header {
-  background: linear-gradient(to bottom, #ffe4e1, #ffc1cc);
-}
-.theme-hello_kitty .terminal-title {
-  color: #ff69b4;
-}
-
-/* Default theme (dark) */
-#main .profile-name {
-  color: #f9f5d7; /* Same as project-name */
-  font-weight: bold;
-}
-
-#main .profile-key {
-  color: #89b4fa; /* Same as project-key */
-}
-
-#main .profile-value {
-  color: #cdd6f4; /* Same as project-value */
-}
-
-/* Light theme */
-.theme-light #main .profile-name {
-  color: #4a2c00; /* Same as project-name */
-}
-
-.theme-light #main .profile-key {
-  color: #1e40af; /* Same as project-key */
-}
-
-.theme-light #main .profile-value {
-  color: #444444; /* Same as project-value */
-}
-
-/* Matrix theme */
-.theme-matrix #main .profile-name {
-  color: #00ff99; /* Same as project-name */
-}
-
-.theme-matrix #main .profile-key {
-  color: #00ccff; /* Same as project-key */
-}
-
-.theme-matrix #main .profile-value {
-  color: #00ff00; /* Same as project-value */
-}
-
-/* Hello Kitty theme */
-.theme-hello_kitty #main .profile-name {
-  color: #c71585; /* Same as project-name */
-}
-
-.theme-hello_kitty #main .profile-key {
-  color: #ffb6c1; /* Same as project-key */
-}
-
-.theme-hello_kitty #main .profile-value {
-  color: #ff69b4; /* Same as project-value */
 }
