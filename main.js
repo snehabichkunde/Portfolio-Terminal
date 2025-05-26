@@ -235,11 +235,22 @@ const terminalPortfolio = (() => {
       const projects = JSON.parse(content.projects);
       return projects.map(formatProject).join("");
     },
-    getcv: () => `<span class="message">${JSON.parse(content.cv).message}</span>`,
-    getgithub: () => {
-      const github = JSON.parse(content.github);
-      window.open(github.url, "_blank");
-      return `<span class="message">${github.message}</span>`;
+    getcv: () => {
+      const resumeUrl = "resume_sneha_bichkunde.pdf";
+      
+      const link = document.createElement("a");
+      link.href = resumeUrl;
+      link.download = "resume_sneha_bichkunde.pdf"; 
+      document.body.appendChild(link);
+      
+      try {
+        link.click();
+        document.body.removeChild(link);
+        return `<span class="message">Downloading CV... Check your downloads!</span>`;
+      } catch (error) {
+        document.body.removeChild(link);
+        return `<span class="error">Error: Could not download CV. Please try again later.</span>`;
+      }
     },
     getlinkedin: () => {
       const linkedin = JSON.parse(content.linkedin);
