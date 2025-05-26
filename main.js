@@ -42,13 +42,19 @@ const terminalPortfolio = (() => {
   }
 
   const welcomeMessage = `
-<span class="header">Hello! I'm Sneha Bichkunde 👋</span>
-Welcome to my interactive portfolio terminal! Type <span class="command">help</span> to see what I can share with you.
-- Press <span class="command">Enter</span> to run a command
-- Use <span class="command">Tab</span> to auto-complete commands
-- Use <span class="command">↑↓</span> arrows to browse command history
-<span class="note">Try starting with <span class="command">about-me</span> to know more about me!</span>
+<div class="header">Welcome to Sneha Bichkunde's Portfolio Terminal! 👋</div>
+<div class="message">Hello! I'm Sneha, a tech enthusiast and developer.</div>
+<div class="message">Explore my work and skills through this interactive terminal.</div>
+<div class="suggest" style="margin-top: 10px;">Getting Started:</div>
+<div class="message">- Type <span class="command">help</span> to see available commands</div>
+<div class="message">- Press <span class="command">Enter</span> to run a command</div>
+<div class="message">- Use <span class="command">Tab</span> to auto-complete commands</div>
+<div class="message">- Use <span class="command">↑↓</span> arrows to browse command history</div>
+<div class="note" style="margin-top: 10px;">Start with <span class="command">about-me</span> to learn more about me!</div>
 `;
+
+
+
 
   function scrollToBottom() {
     terminal.scrollTop = terminal.scrollHeight;
@@ -82,10 +88,16 @@ Welcome to my interactive portfolio terminal! Type <span class="command">help</s
   }
 
   function typeWelcomeMessage() {
-    terminal.innerHTML = welcomeMessage.replace(/\n/g, "<br>");
-    terminal.appendChild(createPrompt());
-    scrollToBottom();
-    focusInput();
+    terminal.innerHTML = ""; 
+    const welcomeDiv = document.createElement("div");
+    welcomeDiv.className = "output";
+    welcomeDiv.innerHTML = welcomeMessage.trim(); 
+    terminal.appendChild(welcomeDiv);
+    setTimeout(() => {
+      terminal.appendChild(createPrompt());
+      scrollToBottom();
+      focusInput();
+    }, 10);
   }
 
   function focusInput() {
