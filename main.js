@@ -235,21 +235,40 @@ const terminalPortfolio = (() => {
       const projects = JSON.parse(content.projects);
       return projects.map(formatProject).join("");
     },
-    getcv: () => {
-      const resumeUrl = "resume_sneha_bichkunde.pdf";
-      
-      const link = document.createElement("a");
-      link.href = resumeUrl;
-      link.download = "resume_sneha_bichkunde.pdf"; 
-      document.body.appendChild(link);
+    getcv: async () => {
+      const baseurl = "/Portfolio_Terminal"; 
+      const resumeUrl = `${baseurl}/resume_sneha_bichkunde.pdf`;
       
       try {
+        // Fetch the resume file as a blob
+        const response = await fetch(resumeUrl);
+        
+        // Check if the request was successful
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        
+        // Convert the response to a blob
+        const blob = await response.blob();
+        
+        // Create a temporary URL for the blob
+        const url = window.URL.createObjectURL(blob);
+        
+        // Create a temporary anchor element to trigger the download
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "resume_sneha_bichkunde.pdf"; // Name of the file when downloaded
+        document.body.appendChild(link);
         link.click();
+        
+        // Clean up: revoke the temporary URL and remove the link
+        window.URL.revokeObjectURL(url);
         document.body.removeChild(link);
+        
         return `<span class="message">Downloading CV... Check your downloads!</span>`;
       } catch (error) {
-        document.body.removeChild(link);
-        return `<span class="error">Error: Could not download CV. Please try again later.</span>`;
+        console.error("Download error:", error);
+        return `<span class="error">Error: Could not download CV. File might be missing or inaccessible.</span>`;
       }
     },
     getlinkedin: () => {
@@ -276,7 +295,7 @@ const terminalPortfolio = (() => {
 
   terminal.addEventListener("click", focusInput);
 
-  terminal.addEventListener("keydown", (e) => {
+  terminal.addEventListener("keydown", async(e) => {
     const input = terminal.querySelector(".input:last-child");
     if (!input) return;
 
@@ -300,7 +319,9 @@ const terminalPortfolio = (() => {
       }
 
       if (commands[command]) {
-        output = commands[command](args);
+        const result = commands[command](args);
+        // Handle both sync and async commands
+        output = result instanceof Promise ? await result : result;
       } else {
         output = `<span class="error">${command}: command not found</span>${suggestCommand(command)}`;
       }
