@@ -276,6 +276,11 @@ const terminalPortfolio = (() => {
       window.open(linkedin.url, "_blank");
       return `<span class="message">${linkedin.message}</span>`;
     },
+    getgithub: () => {
+      const github = JSON.parse(content.github);
+      window.open(github.url, "_blank");
+      return `<span class="message">${github.message}</span>`;
+    },
     themes: (args) => {
       if (!args[0]) {
         return `
