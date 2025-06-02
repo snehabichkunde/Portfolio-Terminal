@@ -300,44 +300,47 @@ const terminalPortfolio = (() => {
 
   terminal.addEventListener("click", focusInput);
 
-  terminal.addEventListener("keydown", async(e) => {
+  terminal.addEventListener("keydown", async (e) => {
     const input = terminal.querySelector(".input:last-child");
     if (!input) return;
-
+  
+    if (e.key !== "Tab") {
+      tabPressCount = 0; 
+    }
+  
     if (e.key === "Enter") {
       e.preventDefault();
       const inputText = input.textContent.trim();
       let [command, ...args] = inputText.split(" ");
       let output = "";
-
+  
       if (inputText !== "") {
         commandHistory.push(inputText);
         if (commandHistory.length > 100) commandHistory.shift();
       }
       historyIndex = -1;
-
+  
       if (inputText === "") {
         terminal.appendChild(createPrompt());
         scrollToBottom();
         focusInput();
         return;
       }
-
+  
       if (commands[command]) {
         const result = commands[command](args);
-        // Handle both sync and async commands
         output = result instanceof Promise ? await result : result;
       } else {
         output = `<span class="error">${command}: command not found</span>${suggestCommand(command)}`;
       }
-
+  
       if (output !== null) {
         typeOutput(output, () => {
           focusInput();
         });
       }
     }
-
+  
     if (e.key === "ArrowUp" && !e.ctrlKey) {
       e.preventDefault();
       if (historyIndex > 0) {
@@ -349,7 +352,7 @@ const terminalPortfolio = (() => {
       }
       focusInput();
     }
-
+  
     if (e.key === "ArrowDown" && !e.ctrlKey) {
       e.preventDefault();
       if (historyIndex >= 0 && historyIndex < commandHistory.length - 1) {
@@ -361,17 +364,37 @@ const terminalPortfolio = (() => {
       }
       focusInput();
     }
-
+  
     if (e.key === "Tab") {
       e.preventDefault();
       const inputText = input.textContent.trim();
       const [command, ...args] = inputText.split(" ");
       const commandsList = Object.keys(commands);
       const matches = commandsList.filter(cmd => cmd.startsWith(command));
+  
+      if (matches.length === 0) {
+        focusInput();
+        return;
+      }
+  
       if (matches.length === 1) {
         input.textContent = matches[0] + (args.length ? " " + args.join(" ") : " ");
+        tabPressCount = 0;
+        focusInput();
+      } else {
+        if (tabPressCount === 0) {
+          const suggestions = `Available commands: ${matches.join(" ")}`;
+          typeOutput(`<div class="suggest">${suggestions}</div>`, () => {
+            focusInput();
+          });
+          tabPressCount = 1;
+        } else {
+          const currentIndex = tabPressCount % matches.length;
+          input.textContent = matches[currentIndex] + (args.length ? " " + args.join(" ") : " ");
+          tabPressCount++;
+          focusInput();
+        }
       }
-      focusInput();
     }
   });
 
@@ -390,5 +413,22 @@ const terminalPortfolio = (() => {
     }
   };
 })();
+
+
+// helper function to find the longest common prefix 
+function findLongestCommonPrefix(strs) {
+  if (!strs.length) return "";
+  if (strs.length === 1) return strs[0];
+  
+  strs.sort();
+  const first = strs[0];
+  const last = strs[strs.length - 1];
+  
+  let i = 0;
+  while (i < first.length && first[i] === last[i]) {
+    i++;
+  }
+  return first.substring(0, i);
+}
 
 terminalPortfolio.init();
