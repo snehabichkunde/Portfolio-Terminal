@@ -150,24 +150,38 @@ const terminalPortfolio = (() => {
     coursework: () => formatLibrarySection(JSON.parse(content.coursework), "Coursework"),
     "my-projects": () => JSON.parse(content.projects).map(formatProject).join(""),
     getcv: async () => {
-      const resumeUrl = "/resume_sneha_bichkunde.pdf"; // Make sure this path is correct
+      
+      const resumeUrl = "resume_sneha_bichkunde.pdf";
+
       try {
         const response = await fetch(resumeUrl);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        if (!response.ok) {
+          if (response.status === 404) {
+             throw new Error(`File not found at path: ${resumeUrl}`);
+          }
+          throw new Error(`Network error! Status: ${response.status}`);
+        }
+
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
+
         link.href = url;
         link.download = "resume_sneha_bichkunde.pdf";
-        document.body.appendChild(link);
-        link.click();
-        window.URL.revokeObjectURL(url);
+        document.body.appendChild(link); // Append to body to make it clickable
+        link.click(); // Programmatically click the link to trigger download
+        
         document.body.removeChild(link);
-        return `<span class="message">Downloading CV...</span>`;
+        window.URL.revokeObjectURL(url);
+
+        return `<span class="message">Downloading CV... Please check your downloads folder!</span>`;
       } catch (error) {
-        return `<span class="error">Error: Could not download CV. File may not exist at path.</span>`;
+        console.error("CV Download failed:", error);
+        return `<span class="error">Error: Could not download CV. The file may be missing or inaccessible. Check console for details.</span>`;
       }
     },
+    // === FIX END ===
     getlinkedin: () => { window.open("https://www.linkedin.com/in/sneha-bichkunde-aba203269/", "_blank"); return `<span class="message">Opening LinkedIn profile...</span>`; },
     getgithub: () => { window.open("https://github.com/snehabichkunde", "_blank"); return `<span class="message">Opening GitHub profile...</span>`; },
     themes: (args) => {
@@ -229,7 +243,6 @@ async function typeWelcomeMessage() {
   document.removeEventListener('keydown', skipAnimation);
   document.removeEventListener('click', skipAnimation);
 
-  // --- THIS IS THE CHANGED PART ---
   // Instead of running a command, we just add the first empty prompt for the user.
   appendNewDesktopPrompt();
   scrollToBottom();
@@ -304,7 +317,6 @@ async function typeWelcomeMessage() {
     };
   }
 
-// NEW, UPDATED VERSION
 function populateMobileCommands(menu = 'main') {
   if (!mobileCommandBar || window.innerWidth > 600) return;
   mobileCommandBar.innerHTML = '';
@@ -314,7 +326,6 @@ function populateMobileCommands(menu = 'main') {
   if (menu === 'themes') {
     commandsToShow = ['dark', 'light', 'matrix', 'hello_kitty', 'back'];
   } else {
-    // --- NEW LOGIC: Define a priority order ---
     const priorityOrder = [
         'about-me', 
         'my-projects', 
@@ -325,10 +336,7 @@ function populateMobileCommands(menu = 'main') {
         'clear'
     ];
     
-    // Get all other commands that are not in the priority list
     const otherCommands = Object.keys(commands).filter(cmd => !priorityOrder.includes(cmd));
-    
-    // Combine the lists: priority first, then the rest
     commandsToShow = [...priorityOrder, ...otherCommands];
   }
 
@@ -337,7 +345,6 @@ function populateMobileCommands(menu = 'main') {
     chip.className = 'command-chip';
     chip.textContent = cmd.replace(/-/g, ' ');
 
-    // Event Logic (remains the same)
     if (cmd === 'back') {
       chip.classList.add('back-chip');
       chip.onclick = () => populateMobileCommands('main');
