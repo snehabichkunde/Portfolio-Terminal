@@ -1,8 +1,16 @@
 const terminalPortfolio = (() => {
+
+  // === DOM ELEMENTS ===
   const terminal = document.getElementById("main");
+  const mobileInput = document.getElementById('mobile-input');
+  const sendBtn = document.getElementById('send-btn');
+  const quickCmdContainer = document.querySelector('.quick-commands');
+
+  // === STATE ===
   let commandHistory = [];
   let historyIndex = -1;
   let currentInputBuffer = "";
+
 
   const content = {
     about: `{"name":"Sneha Bichkunde","email":"bichkundesneha@gmail.com","city":"Nanded","education":"B.Tech in Information Technology (8.3 GPA), SGGS Nanded","fun_fact":"I love exploring systems through terminal commands!"}`,
@@ -20,6 +28,15 @@ const terminalPortfolio = (() => {
 
   function getPrompt() {
     return `<span class="prompt">Sneha Bichkunde:~/portfolio$ </span>`;
+  }
+
+  function scrollToBottom() {
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+  function focusInput() {
+    const isMobile = window.innerWidth <= 600;
+    const input = isMobile ? mobileInput : document.querySelector("#desktop-prompt .input");
+    if (input) input.focus();
   }
 
   async function typeWelcomeMessage() {
@@ -78,50 +95,49 @@ const terminalPortfolio = (() => {
     terminal.appendChild(createPrompt());
     scrollToBottom();
     focusInput();
-  }
-
-  function scrollToBottom() {
-    terminal.scrollTop = terminal.scrollHeight;
+    await executeCommand("help");
   }
 
   function createPrompt() {
-    const previousInput = terminal.querySelector(".input:last-child");
-    if (previousInput) {
-      previousInput.contentEditable = false;
-      previousInput.classList.remove("input");
-    }
     const promptDiv = document.createElement("div");
     promptDiv.className = "prompt-line";
+    // This ID is used to target the *active* desktop input
+    promptDiv.id = "desktop-prompt"; 
+    
     promptDiv.innerHTML = getPrompt();
     const inputSpan = document.createElement("span");
-    inputSpan.contentEditable = true;
     inputSpan.className = "input";
+    inputSpan.contentEditable = true;
     inputSpan.setAttribute("spellcheck", "false");
     promptDiv.appendChild(inputSpan);
     return promptDiv;
   }
 
-  function typeOutput(output, callback) {
+  function typeOutput(output) {
     const outputDiv = document.createElement("div");
     outputDiv.className = "output";
     outputDiv.innerHTML = output.replace(/\n/g, "<br>");
     terminal.appendChild(outputDiv);
-    terminal.appendChild(createPrompt());
-    scrollToBottom();
-    callback();
   }
 
-  function focusInput() {
-    const input = terminal.querySelector(".input:last-child");
-    if (input) {
-      input.focus();
-      const range = document.createRange();
-      const sel = window.getSelection();
-      range.selectNodeContents(input);
-      range.collapse(false);
-      sel.removeAllRanges();
-      sel.addRange(range);
+  // Creates a new, active prompt line on the desktop
+  function createNewDesktopPrompt() {
+    const oldPrompt = document.getElementById("desktop-prompt");
+    if (oldPrompt) {
+        oldPrompt.removeAttribute("id");
+        const oldInput = oldPrompt.querySelector(".input");
+        oldInput.contentEditable = "false";
     }
+    const newPrompt = document.createElement("div");
+    newPrompt.className = "prompt-line";
+    newPrompt.id = "desktop-prompt";
+    newPrompt.innerHTML = getPrompt();
+    const newPromptInput = document.createElement("span");
+    newPromptInput.className = "input";
+    newPromptInput.contentEditable = "true";
+    newPromptInput.setAttribute("spellcheck", "false");
+    newPrompt.appendChild(newPromptInput);
+    terminal.appendChild(newPrompt);
   }
 
   function formatProject(project) {
@@ -172,7 +188,6 @@ const terminalPortfolio = (() => {
     });
     return suggestion ? `<br><span class="suggest">Did you mean '<span class="command">${suggestion}</span>'?</span>` : "";
   }
-
   const commands = {
     help: () => `
 <span class="header">Available Commands</span>
@@ -354,16 +369,125 @@ const terminalPortfolio = (() => {
     document.execCommand("insertText", false, text);
   });
 
+  // Sets up all event listeners for desktop and mobile
+  function setupEventListeners() {
+    // Desktop keyboard input
+    terminal.addEventListener("keydown", async (e) => {
+      if (window.innerWidth <= 600) return; // Only run on desktop
+      const desktopInput = document.querySelector("#desktop-prompt .input");
+      if (!desktopInput) return;
+      
+      // Handle Enter
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const commandText = desktopInput.textContent;
+        await executeCommand(commandText);
+      }
+      // Handle Arrow Up
+      else if (e.key === "ArrowUp") { /* ... (Your ArrowUp logic here) ... */ }
+      // Handle Arrow Down
+      else if (e.key === "ArrowDown") { /* ... (Your ArrowDown logic here) ... */ }
+      // Handle Tab
+      else if (e.key === "Tab") { /* ... (Your Tab logic here) ... */ }
+    });
+    
+    // Mobile button and keyboard input
+    if (mobileInput && sendBtn) {
+      const processMobileInput = async () => {
+        const commandText = mobileInput.textContent;
+        mobileInput.textContent = "";
+        await executeCommand(commandText);
+      };
+      sendBtn.addEventListener('click', processMobileInput);
+      mobileInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          processMobileInput();
+        }
+      });
+    }
+
+    // Main terminal area click listener
+    terminal.addEventListener('click', (e) => {
+      // If click is not on a link, focus the correct input
+      if (e.target.tagName !== 'A') {
+        focusInput();
+      }
+    });
+  }
+
+
+  // Dynamically creates the quick command chips for mobile
+  function populateQuickCommands() {
+    if (!quickCmdContainer) return;
+    const quicks = ['help', 'about-me', 'my-projects', 'technical-skills', 'themes', 'clear'];
+    quicks.forEach(cmd => {
+      const chip = document.createElement('button');
+      chip.className = 'command-chip';
+      chip.textContent = cmd;
+      chip.onclick = () => {
+        executeCommand(cmd);
+        if (mobileInput) mobileInput.textContent = "";
+      };
+      quickCmdContainer.appendChild(chip);
+    });
+  }
+
+  async function executeCommand(commandStr) {
+    const trimmedCmd = commandStr.trim();
+    if (trimmedCmd === "") {
+        createNewDesktopPrompt(); // Just add a new line on desktop
+        scrollToBottom();
+        return;
+    }
+
+    // Visually log the command that was run
+    const logLine = document.createElement("div");
+    logLine.className = "prompt-line";
+    logLine.innerHTML = `${getPrompt()}<span class="executed-cmd">${trimmedCmd}</span>`;
+    // Deactivate current desktop prompt before logging
+    const currentPrompt = document.getElementById("desktop-prompt");
+    if (currentPrompt) {
+        terminal.removeChild(currentPrompt);
+    }
+    terminal.appendChild(logLine);
+
+    commandHistory.push(trimmedCmd);
+    historyIndex = commandHistory.length;
+    currentInputBuffer = "";
+
+    const [command, ...args] = trimmedCmd.split(" ");
+    let output;
+
+    if (commands[command]) {
+        output = await Promise.resolve(commands[command](args));
+    } else {
+        output = `<span class="error">${command}: command not found</span>${suggestCommand(command)}`;
+    }
+    
+    if (output !== null) {
+        typeOutput(output);
+    }
+    
+    createNewDesktopPrompt();
+    scrollToBottom();
+    focusInput();
+  }
+
   return {
     init: async () => {
       terminal.innerHTML = "";
       const savedTheme = localStorage.getItem("theme") || "dark";
       document.body.className = `theme-${savedTheme}`;
+      
+      populateQuickCommands();
+      setupEventListeners();
+      
+      // The initial welcome message now also handles running the first command
       await typeWelcomeMessage();
     }
   };
 })();
-
 function findLongestCommonPrefix(strs) {
   if (!strs || strs.length === 0) return "";
   strs.sort();
