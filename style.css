@@ -1,14 +1,52 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* 
+  ==============================================
+    CSS VARIABLES (CUSTOM PROPERTIES)
+    - Default theme is "Catppuccin Dark" inspired.
+    - Each .theme-* class just overrides these variables.
+  ==============================================
+*/
+:root {
+  --bg-body: #1e1e2e;
+  --bg-terminal: rgba(30, 30, 46, 0.9);
+  --bg-header: linear-gradient(to bottom, #45475a 0%, #313244 100%);
+  --border-terminal: rgba(205, 214, 244, 0.1);
+
+  --text-primary: #cdd6f4;
+  --text-secondary: #bac2de;
+  --text-title: #cdd6f4;
+  --text-header: #f9e2af; /* Yellow */
+  --text-prompt: #a6e3a1; /* Green */
+  --text-command: #fab387; /* Orange */
+  --text-error: #f38ba8; /* Red */
+  --text-link: #cba6f7; /* Mauve */
+  --text-link-hover: #f5c2e7; /* Pink */
+  --text-suggestion: #f9e2af; /* Yellow */
+
+  --accent-border: #fab387; /* Orange */
+  --library-bg: rgba(205, 214, 244, 0.05);
+  --library-border: #89b4fa; /* Blue */
+  --library-key: #f9e2af; /* Yellow */
+
+  --scrollbar-track: rgba(255, 255, 255, 0.05);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+  --caret-color: var(--text-prompt);
+}
+
+/* 
+  ==============================================
+    BASE & LAYOUT STYLES
+  ==============================================
+*/
 * {
   box-sizing: border-box;
 }
 
-body, .terminal-wrapper, #main, .terminal-header, .terminal-title, .circle {
-  transition: background 0.3s ease, color 0.3s ease, border 0.3s ease;
-}
-
 body {
   margin: 0;
-  padding: 20px;
+  padding: 1rem;
   font-family: 'JetBrains Mono', monospace;
   display: flex;
   align-items: center;
@@ -16,8 +54,11 @@ body {
   min-height: 100vh;
   overflow: hidden;
   position: relative;
+  background-color: var(--bg-body);
+  transition: background-color 0.3s ease;
 }
 
+/* CORRECTED ID SELECTOR */
 #particles {
   position: fixed;
   top: 0;
@@ -30,92 +71,82 @@ body {
 .terminal-wrapper {
   width: 90%;
   max-width: 1000px;
-  height: 80vh;
-  background: rgba(20, 20, 20, 0.95);
+  height: 85vh;
+  background-color: var(--bg-terminal);
   backdrop-filter: blur(10px);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-terminal);
   display: flex;
   flex-direction: column;
   z-index: 1;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
+/* 
+  ==============================================
+    TERMINAL HEADER
+  ==============================================
+*/
 .terminal-header {
   height: 32px;
-  background: linear-gradient(to bottom, #333 0%, #222 100%);
+  background: var(--bg-header);
   display: flex;
   align-items: center;
   padding: 0 12px;
   user-select: none;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
 }
 
 .circle {
-  height: 10px;
-  width: 10px;
+  height: 12px;
+  width: 12px;
   border-radius: 50%;
-  margin-right: 6px;
+  margin-right: 8px;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s, opacity 0.2s;
 }
 
-.circle:hover {
-  transform: scale(1.1);
-  opacity: 0.9;
-}
-
-.red {
-  background-color: #ff5f57;
-}
-
-.yellow {
-  background-color: #ffbd2e;
-}
-
-.green {
-  background-color: #28c940;
-}
+.red { background-color: #ff5f57; }
+.yellow { background-color: #ffbd2e; }
+.green { background-color: #28c940; }
 
 .terminal-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #ccc;
+  color: var(--text-title);
   font-size: 14px;
   font-weight: 600;
+  margin: 0 auto;
+  transition: color 0.3s ease;
 }
 
+/* 
+  ==============================================
+    TERMINAL CONTENT & TYPOGRAPHY
+  ==============================================
+*/
 #main {
   flex: 1;
-  background: transparent;
-  color: #a6e3a1; /* Primary text color */
+  color: var(--text-primary);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 14px;
+  font-size: clamp(12px, 1.8vw, 14px);
   line-height: 1.6;
-  letter-spacing: 0.5px;
-  padding: 16px;
+  padding: 1rem;
   overflow-y: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
   outline: none;
-  display: flex;
-  flex-direction: column;
+  transition: color 0.3s ease;
 }
 
 .prompt-line {
   display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.command-line {
-  margin-bottom: 5px;
-  color: #a6e3a1;
+  align-items: flex-start;
 }
 
 #main .prompt {
-  color: #a6e3a1; /* Prompt color */
+  color: var(--text-prompt);
+  margin-right: 0.5rem;
 }
 
 #main .input {
@@ -125,531 +156,201 @@ body {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
+  line-height: inherit;
   outline: none;
-  caret-color: #a6e3a1;
-  position: relative;
-}
-
-.note {
-  color: #888; /* Instructions/note color */
-  font-style: italic;
-  display: block;
-  margin-top: 5px;
+  caret-color: var(--caret-color);
 }
 
 #main .input:empty:before {
   content: "\200b";
 }
 
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
 #main .output {
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
 }
 
-#main .header {
-  color: #f9f5d7; /* Header color */
-}
-
-#main .command {
-  color: #fab387; /* Command color */
-}
-
-#main .error {
-  color: #f38ba8; /* Error color */
-}
-
-#main .message {
-  color: #a6e3a1; /* Primary text/message color */
-}
-
-#main .suggest {
-  color: #f9e2af; /* Suggestion color */
-}
-
-/* Project Styling */
-#main .project-container {
-  margin: 10px 0;
-  padding: 8px;
-  border-left: 3px solid #fab387; /* Border color for project container */
-}
-
-#main .project-name {
-  color: #f9f5d7; /* Project name color */
-  font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-#main .project-description {
-  color: #cdd6f4; /* Description color */
-  margin: 5px 0;
-}
-
-#main .project-tech {
-  color: #89b4fa; /* Tech stack color */
-  font-style: italic;
-  margin: 5px 0;
-}
-
-#main .project-links {
-  margin-top: 5px;
-}
+#main .header { color: var(--text-header); }
+#main .command { color: var(--text-command); }
+#main .error { color: var(--text-error); }
+#main .message { color: var(--text-primary); }
+#main .suggest { color: var(--text-suggestion); }
+#main .note { color: var(--text-secondary); font-style: italic; }
 
 #main .link {
-  color: #cba6f7; /* Link color */
+  color: var(--text-link);
   text-decoration: none;
   cursor: pointer;
-  margin-right: 15px;
+  transition: color 0.2s;
 }
-
 #main .link:hover {
   text-decoration: underline;
-  color: #f5c2e7; /* Link hover color */
+  color: var(--text-link-hover);
 }
 
-/* Library-Inspired Styling for About, Hobbies, etc. */
-#main .library-container {
-  margin: 10px 0;
-  padding: 10px;
-  background: rgba(255, 245, 220, 0.1); /* Parchment-like background */
-  border-left: 4px solid #8b4513; /* Warm brown border, library-inspired */
+/* 
+  ==============================================
+    COMPONENT STYLES (Projects, Library, etc.)
+  ==============================================
+*/
+.project-container {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--accent-border);
+}
+.project-name { font-weight: bold; font-size: 1.1em; color: var(--text-header); }
+.project-description { margin: 0.25rem 0; color: var(--text-secondary); }
+.project-tech { font-style: italic; color: var(--text-link); }
+.project-links { margin-top: 0.5rem; }
+.project-links .link { margin-right: 1rem; }
+
+.library-container {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: var(--library-bg);
+  border-left: 4px solid var(--library-border);
   border-radius: 4px;
 }
-
-#main .library-title {
-  color: #f9f5d7; /* Warm title color */
+.library-title {
+  color: var(--text-header);
   font-weight: bold;
-  font-size: 16px;
-  margin-bottom: 8px;
+  font-size: 1.1em;
   text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.5rem;
 }
-
-#main .library-item {
-  margin: 5px 0;
+.library-item {
   display: flex;
   flex-wrap: wrap;
+  margin: 0.25rem 0;
 }
-
-#main .library-key {
-  color: #d4a017; /* Golden key color */
+.library-key {
+  color: var(--library-key);
   font-weight: bold;
-  margin-right: 10px;
-  min-width: 150px; /* Ensures alignment */
-}
-
-#main .library-value {
-  color: #e6d5b8; /* Soft off-white value color */
-  flex: 1;
-}
-
-#main .library-link {
-  color: #cba6f7; /* Link color */
-  text-decoration: none;
-  cursor: pointer;
-}
-
-#main .library-link:hover {
-  text-decoration: underline;
-  color: #f5c2e7; /* Link hover color */
-}
-
-#main::-webkit-scrollbar {
-  width: 8px;
-}
-
-#main::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-#main::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-/* Light Theme */
-.theme-light .terminal-wrapper {
-  background: rgba(240, 240, 240, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.theme-light #main {
-  color: #1a1a1a; /* Primary text color */
-}
-
-.theme-light .command-line {
-  color: #2e7d32;
-}
-
-.theme-light #main .prompt {
-  color: #2e7d32; /* Prompt color */
-}
-
-.theme-light #main .input {
-  caret-color: #2e7d32;
-}
-
-.theme-light #main .header {
-  color: #4a2c00; /* Header color */
-}
-
-.theme-light #main .command {
-  color: #d73a49; /* Command color */
-}
-
-.theme-light #main .error {
-  color: #b91c1c; /* Error color */
-}
-
-.theme-light #main .message {
-  color: #2e7d32; /* Primary text/message color */
-}
-
-.theme-light #main .suggest {
-  color: #b35f00; /* Suggestion color */
-}
-
-.theme-light #main .project-container {
-  border-left: 3px solid #d73a49; /* Border color for project container */
-}
-
-.theme-light #main .project-name {
-  color: #4a2c00; /* Project name color */
-}
-
-.theme-light #main .project-description {
-  color: #444444; /* Description color */
-}
-
-.theme-light #main .project-tech {
-  color: #1e40af; /* Tech stack color */
-}
-
-.theme-light #main .project-links {
-  margin-top: 5px;
-}
-
-.theme-light #main .link {
-  color: #6b21a8; /* Link color */
-}
-
-.theme-light #main .link:hover {
-  color: #9333ea; /* Link hover color */
-}
-
-.theme-light #main .library-container {
-  background: rgba(220, 210, 180, 0.3); /* Lighter parchment background */
-  border-left: 4px solid #5c4033; /* Darker brown border */
-}
-
-.theme-light #main .library-title {
-  color: #4a2c00; /* Warm title color */
-}
-
-.theme-light #main .library-key {
-  color: #8b5a2b; /* Softer brown key color */
-}
-
-.theme-light #main .library-value {
-  color: #333333; /* Darker value color for contrast */
-}
-
-.theme-light #main .library-link {
-  color: #6b21a8; /* Link color */
-}
-
-.theme-light #main .library-link:hover {
-  color: #9333ea; /* Link hover color */
-}
-
-.theme-light .terminal-header {
-  background: linear-gradient(to bottom, #f0f0f0, #d0d0d0);
-}
-
-.theme-light .terminal-title {
-  color: #333;
-}
-
-.theme-light .note {
-  color: #666; /* Instructions/note color */
-}
-
-/* Matrix Theme */
-.theme-matrix .terminal-wrapper {
-  background: rgba(10, 10, 10, 0.95);
-  border: 1px solid rgba(0, 255, 0, 0.2);
-}
-
-.theme-matrix #main {
-  color: #00ff00; /* Primary text color */
-}
-
-.theme-matrix .command-line {
-  color: #00cc00;
-}
-
-.theme-matrix #main .prompt {
-  color: #00cc00; /* Prompt color */
-}
-
-.theme-matrix #main .input {
-  caret-color: #00ff00;
-}
-
-.theme-matrix #main .header {
-  color: #00ff99; /* Header color */
-}
-
-.theme-matrix #main .command {
-  color: #00ffcc; /* Command color */
-}
-
-.theme-matrix #main .error {
-  color: #ff3333; /* Error color */
-}
-
-.theme-matrix #main .message {
-  color: #00cc00; /* Primary text/message color */
-}
-
-.theme-matrix #main .suggest {
-  color: #00ff99; /* Suggestion color */
-}
-
-.theme-matrix #main .project-container {
-  border-left: 3px solid #00ffcc; /* Border color for project container */
-}
-
-.theme-matrix #main .project-name {
-  color: #00ff99; /* Project name color */
-}
-
-.theme-matrix #main .project-description {
-  color: #00ff00; /* Description color */
-}
-
-.theme-matrix #main .project-tech {
-  color: #00ccff; /* Tech stack color */
-}
-
-.theme-matrix #main .project-links {
-  margin-top: 5px;
-}
-
-.theme-matrix #main .link {
-  color: #00ffcc; /* Link color */
-}
-
-.theme-matrix #main .link:hover {
-  color: #00ffff; /* Link hover color */
-}
-
-.theme-matrix #main .library-container {
-  background: rgba(0, 255, 0, 0.1); /* Green-tinted background */
-  border-left: 4px solid #00cc00; /* Green border */
-}
-
-.theme-matrix #main .library-title {
-  color: #00ff99; /* Bright green title */
-}
-
-.theme-matrix #main .library-key {
-  color: #00ffcc; /* Light green key */
-}
-
-.theme-matrix #main .library-value {
-  color: #00ff00; /* Standard green value */
-}
-
-.theme-matrix #main .library-link {
-  color: #00ffcc; /* Link color */
-}
-
-.theme-matrix #main .library-link:hover {
-  color: #00ffff; /* Link hover color */
-}
-
-.theme-matrix .terminal-header {
-  background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
-}
-
-.theme-matrix .terminal-title {
-  color: #00ff00;
-}
-
-.theme-matrix .note {
-  color: #008800; /* Instructions/note color */
-}
-
-/* Hello Kitty Theme */
-.theme-hello_kitty .terminal-wrapper {
-  background: rgba(255, 245, 247, 0.95);
-  border: 1px solid rgba(255, 182, 193, 0.3);
-}
-
-.theme-hello_kitty #main {
-  color: #ff69b4; /* Primary text color */
-}
-
-.theme-hello_kitty .command-line {
-  color: #ff1493;
-}
-
-.theme-hello_kitty #main .prompt {
-  color: #ff1493; /* Prompt color */
-}
-
-.theme-hello_kitty #main .input {
-  caret-color: #ff69b4;
-}
-
-.theme-hello_kitty #main .header {
-  color: #c71585; /* Header color */
-}
-
-.theme-hello_kitty #main .command {
-  color: #ff4500; /* Command color */
-}
-
-.theme-hello_kitty #main .error {
-  color: #dc143c; /* Error color */
-}
-
-.theme-hello_kitty #main .message {
-  color: #ff1493; /* Primary text/message color */
-}
-
-.theme-hello_kitty #main .suggest {
-  color: #c71585; /* Suggestion color */
-}
-
-.theme-hello_kitty #main .project-container {
-  border-left: 3px solid #ff4500; /* Border color for project container */
-}
-
-.theme-hello_kitty #main .project-name {
-  color: #c71585; /* Project name color */
-}
-
-.theme-hello_kitty #main .project-description {
-  color: #ff69b4; /* Description color */
-}
-
-.theme-hello_kitty #main .project-tech {
-  color: #ffb6c1; /* Tech stack color */
-}
-
-.theme-hello_kitty #main .project-links {
-  margin-top: 5px;
-}
-
-.theme-hello_kitty #main .link {
-  color: #ff4500; /* Link color */
-}
-
-.theme-hello_kitty #main .link:hover {
-  color: #ff6347; /* Link hover color */
-}
-
-.theme-hello_kitty #main .library-container {
-  background: rgba(255, 220, 220, 0.2); /* Soft pink background */
-  border-left: 4px solid #ff69b4; /* Pink border */
-}
-
-.theme-hello_kitty #main .library-title {
-  color: #c71585; /* Bright pink title */
-}
-
-.theme-hello_kitty #main .library-key {
-  color: #ff4500; /* Warm orange key */
-}
-
-.theme-hello_kitty #main .library-value {
-  color: #ff69b4; /* Standard pink value */
-}
-
-.theme-hello_kitty #main .library-link {
-  color: #ff4500; /* Link color */
-}
-
-.theme-hello_kitty #main .library-link:hover {
-  color: #ff6347; /* Link hover color */
-}
-
-.theme-hello_kitty .terminal-header {
-  background: linear-gradient(to bottom, #ffe4e1, #ffc1cc);
-}
-
-.theme-hello_kitty .terminal-title {
-  color: #ff69b4;
-}
-
-.theme-hello_kitty .note {
-  color: #ff77a9; /* Instructions/note color */
-}
-
-/* Default theme (dark) */
-#main .profile-name {
-  color: #f9f5d7; /* Same as project-name */
-  font-weight: bold;
-}
-
-#main .profile-value {
-  color: #cdd6f4; /* Same as project-value */
-}
-
-/* Light theme */
-.theme-light #main .profile-name {
-  color: #4a2c00; /* Same as project-name */
-}
-
-.theme-light #main .profile-value {
-  color: #444444; /* Same as project-value */
-}
-
-/* Matrix theme */
-.theme-matrix #main .profile-name {
-  color: #00ff99; /* Same as project-name */
-}
-
-.theme-matrix #main .profile-value {
-  color: #00ff00; /* Same as project-value */
-}
-
-/* Hello Kitty theme */
-.theme-hello_kitty #main .profile-name {
-  color: #c71585; /* Same as project-name */
-}
-
-.theme-hello_kitty #main .profile-value {
-  color: #ff69b4; /* Same as project-value */
-}
-
+  margin-right: 1rem;
+  min-width: 150px;
+}
+.library-value { flex: 1; color: var(--text-primary); }
+.library-link { color: var(--text-link); }
+.library-link:hover { color: var(--text-link-hover); }
+
+/* 
+  ==============================================
+    SCROLLBAR
+  ==============================================
+*/
+#main::-webkit-scrollbar { width: 8px; }
+#main::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+#main::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+
+
+/* 
+  ==============================================
+    THEME DEFINITIONS
+  ==============================================
+*/
+
+/* --- Light Theme (Solarized Inspired) --- */
+.theme-light {
+  --bg-body: #fdf6e3;
+  --bg-terminal: rgba(253, 246, 227, 0.9);
+  --bg-header: linear-gradient(to bottom, #eee8d5, #fdf6e3);
+  --border-terminal: rgba(0, 0, 0, 0.1);
+  --text-primary: #586e75;
+  --text-secondary: #839496;
+  --text-title: #073642;
+  --text-header: #b58900;
+  --text-prompt: #2aa198;
+  --text-command: #cb4b16;
+  --text-error: #dc322f;
+  --text-link: #6c71c4;
+  --text-link-hover: #d33682;
+  --text-suggestion: #b58900;
+  --accent-border: #cb4b16;
+  --library-bg: rgba(7, 54, 66, 0.05);
+  --library-border: #268bd2;
+  --library-key: #b58900;
+  --scrollbar-track: rgba(0, 0, 0, 0.05);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --caret-color: var(--text-prompt);
+}
+
+/* --- Matrix Theme --- */
+.theme-matrix {
+  --bg-body: #000;
+  --bg-terminal: rgba(10, 10, 10, 0.9);
+  --bg-header: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+  --border-terminal: rgba(0, 255, 0, 0.2);
+  --text-primary: #00ff41;
+  --text-secondary: #00c732;
+  --text-title: #00ff41;
+  --text-header: #afff00;
+  --text-prompt: #00ff41;
+  --text-command: #50fa7b;
+  --text-error: #ff5555;
+  --text-link: #00f0a0;
+  --text-link-hover: #00ffff;
+  --text-suggestion: #afff00;
+  --accent-border: #50fa7b;
+  --library-bg: rgba(0, 255, 0, 0.05);
+  --library-border: #00ff41;
+  --library-key: #afff00;
+  --scrollbar-track: rgba(0, 255, 0, 0.05);
+  --scrollbar-thumb: rgba(0, 255, 0, 0.2);
+  --caret-color: var(--text-prompt);
+}
+
+/* --- Hello Kitty Theme (Softer) --- */
+.theme-hello_kitty {
+  --bg-body: #fff0f5;
+  --bg-terminal: rgba(255, 240, 245, 0.9);
+  --bg-header: linear-gradient(to bottom, #ffe4e1, #ffc1cc);
+  --border-terminal: rgba(255, 182, 193, 0.4);
+  --text-primary: #db7093;
+  --text-secondary: #ff85a1;
+  --text-title: #c71585;
+  --text-header: #c71585;
+  --text-prompt: #ff69b4;
+  --text-command: #ff4500;
+  --text-error: #dc143c;
+  --text-link: #9370db;
+  --text-link-hover: #c71585;
+  --text-suggestion: #ff69b4;
+  --accent-border: #ff69b4;
+  --library-bg: rgba(219, 112, 147, 0.1);
+  --library-border: #ffb6c1;
+  --library-key: #ff4500;
+  --scrollbar-track: rgba(219, 112, 147, 0.1);
+  --scrollbar-thumb: rgba(219, 112, 147, 0.4);
+  --caret-color: var(--text-prompt);
+}
+
+/* 
+  ==============================================
+    RESPONSIVE MEDIA QUERIES
+  ==============================================
+*/
 @media (max-width: 768px) {
   .terminal-wrapper {
     width: 95%;
-    height: 85vh;
+    height: 90vh;
   }
-  #main {
-    font-size: 13px;
-    padding: 12px;
+  .library-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .library-key {
+    min-width: 0;
+    margin-bottom: 0.25rem;
   }
 }
 
 @media (max-width: 480px) {
+  body {
+    padding: 0.5rem;
+  }
   .terminal-wrapper {
-    width: 98%;
-    height: 90vh;
+    width: 100%;
+    height: 95vh;
+    border-radius: 0;
   }
-  #main {
-    font-size: 12px;
-    padding: 10px;
-  }
-}
-
-#main .suggest {
-  color: #f9e2af; 
 }

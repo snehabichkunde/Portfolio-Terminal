@@ -2,6 +2,7 @@ const terminalPortfolio = (() => {
   const terminal = document.getElementById("main");
   let commandHistory = [];
   let historyIndex = -1;
+  let currentInputBuffer = "";
 
   const content = {
     about: `{"name":"Sneha Bichkunde","email":"bichkundesneha@gmail.com","city":"Nanded","education":"B.Tech in Information Technology (8.3 GPA), SGGS Nanded","fun_fact":"I love exploring systems through terminal commands!"}`,
@@ -11,26 +12,9 @@ const terminalPortfolio = (() => {
     coding_profiles: `{"GeeksforGeeks":"Active contributor with 500+ problems solved in Data Structures and Algorithms, https://www.geeksforgeeks.org/user/bichkund5ad6/","LeetCode":"Solved 100+ problems, focusing on algorithms and system design challenges, https://leetcode.com/u/SnehaBichkunde/"}`,
     coursework: `{"coursework":"Operating Systems, Data Structures & Algorithms, DBMS, Computer Networks"}`,
     projects: `[
-      {
-        "name": "Digital Diary",
-        "description": "A full-stack diary app to securely store and manage personal stories.",
-        "tech": "React.js, Node.js, MongoDB, JWT",
-        "link": "https://digital-diary-sneha.netlify.app/",
-        "github": "https://github.com/snehabichkunde/DigitalDiary"
-      },
-      {
-        "name": "my_shell",
-        "description": "A POSIX-compliant shell in C to enhance terminal interaction.",
-        "tech": "C, ncurses",
-        "github": "https://github.com/snehabichkunde/c-shell"
-      },
-      {
-        "name": "Boids Flocking",
-        "description": "A flocking simulation in p5.js to model bird-like behavior.",
-        "tech": "p5.js, JavaScript",
-        "link": "https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/",
-        "github": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree"
-      }
+      { "name": "Digital Diary", "description": "A full-stack diary app to securely store and manage personal stories.", "tech": "React.js, Node.js, MongoDB, JWT", "link": "https://digital-diary-sneha.netlify.app/", "github": "https://github.com/snehabichkunde/DigitalDiary" },
+      { "name": "my_shell", "description": "A POSIX-compliant shell in C to enhance terminal interaction.", "tech": "C, ncurses", "github": "https://github.com/snehabichkunde/c-shell" },
+      { "name": "Boids Flocking", "description": "A flocking simulation in p5.js to model bird-like behavior.", "tech": "p5.js, JavaScript", "link": "https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/", "github": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree" }
     ]`,
   };
 
@@ -38,20 +22,63 @@ const terminalPortfolio = (() => {
     return `<span class="prompt">Sneha Bichkunde:~/portfolio$ </span>`;
   }
 
-  const welcomeMessage = `
-<div class="header">Welcome to Sneha Bichkunde's Portfolio Terminal! 👋</div>
-<div class="message">Hello! I'm Sneha, a tech enthusiast and developer.</div>
-<div class="message">Explore my work and skills through this interactive terminal.</div>
-<div class="suggest" style="margin-top: 10px;">Getting Started:</div>
-<div class="message">- Type <span class="command">help</span> to see available commands</div>
-<div class="message">- Press <span class="command">Enter</span> to run a command</div>
-<div class="message">- Use <span class="command">Tab</span> to auto-complete commands</div>
-<div class="message">- Use <span class="command">↑↓</span> arrows to browse command history</div>
-<div class="note" style="margin-top: 10px;">Start with <span class="command">about-me</span> to learn more about me!</div>
+  async function typeWelcomeMessage() {
+    const welcomeMessage = `
+<div class="message">Initializing session for user: guest...</div>
+<div class="message">Connection established.</div>
+<div class="header">Welcome to Sneha Bichkunde's digital space.</div>
+<div class="suggest">Run <span class="command">help</span> to see available documentation.</div>
 `;
+    const TYPING_SPEED_MS = 30;
+    let isTyping = true;
 
+    const skipAnimation = () => { isTyping = false; };
+    document.addEventListener('keydown', skipAnimation, { once: true });
+    document.addEventListener('click', skipAnimation, { once: true });
 
+    const container = document.createElement("div");
+    container.className = "output";
+    terminal.appendChild(container);
 
+    async function typeNode(node, parentEl) {
+      if (!isTyping) return;
+      if (node.nodeType === Node.TEXT_NODE) {
+        for (const char of node.textContent) {
+          if (!isTyping) break;
+          parentEl.innerHTML += char;
+          await new Promise(r => setTimeout(r, TYPING_SPEED_MS));
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = document.createElement(node.nodeName);
+        for(const attr of node.attributes) {
+            el.setAttribute(attr.name, attr.value);
+        }
+        parentEl.appendChild(el);
+        for (const child of node.childNodes) {
+          await typeNode(child, el);
+        }
+      }
+    }
+
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = welcomeMessage.trim();
+
+    for (const node of tempDiv.childNodes) {
+      await typeNode(node, container);
+      if (!isTyping) break;
+    }
+
+    if (!isTyping) {
+      container.innerHTML = welcomeMessage.trim();
+    }
+
+    document.removeEventListener('keydown', skipAnimation);
+    document.removeEventListener('click', skipAnimation);
+
+    terminal.appendChild(createPrompt());
+    scrollToBottom();
+    focusInput();
+  }
 
   function scrollToBottom() {
     terminal.scrollTop = terminal.scrollHeight;
@@ -84,19 +111,6 @@ const terminalPortfolio = (() => {
     callback();
   }
 
-  function typeWelcomeMessage() {
-    terminal.innerHTML = ""; 
-    const welcomeDiv = document.createElement("div");
-    welcomeDiv.className = "output";
-    welcomeDiv.innerHTML = welcomeMessage.trim(); 
-    terminal.appendChild(welcomeDiv);
-    setTimeout(() => {
-      terminal.appendChild(createPrompt());
-      scrollToBottom();
-      focusInput();
-    }, 10);
-  }
-
   function focusInput() {
     const input = terminal.querySelector(".input:last-child");
     if (input) {
@@ -127,20 +141,16 @@ const terminalPortfolio = (() => {
   }
 
   function formatLibrarySection(obj, title) {
-    let output = `<div class="library-container">`;
-    output += `<span class="library-title">${title}</span><br>`;
-    const keys = Object.keys(obj);
-    keys.forEach((key) => {
+    let output = `<div class="library-container"><span class="library-title">${title}</span><br>`;
+    Object.keys(obj).forEach((key) => {
       let value = obj[key];
       let link = null;
-      // Check if the value contains a URL (for coding-profiles)
       if (typeof value === "string" && value.includes("http")) {
-        const [description, url] = value.split(", ");
-        value = description;
-        link = url;
+        const parts = value.split(", ");
+        value = parts[0];
+        link = parts[1];
       }
-      output += `<div class="library-item">`;
-      output += `<span class="library-key">${key.replace(/_/g, " ")}:</span>`;
+      output += `<div class="library-item"><span class="library-key">${key.replace(/_/g, " ")}:</span>`;
       output += `<span class="library-value">${value}</span>`;
       if (link) {
         output += `<a href="${link}" class="library-link" target="_blank">[Visit]</a>`;
@@ -152,8 +162,7 @@ const terminalPortfolio = (() => {
   }
 
   function suggestCommand(input) {
-    const commandsList = Object.keys(commands);
-    const suggestion = commandsList.find(cmd => {
+    const suggestion = Object.keys(commands).find(cmd => {
       let diff = 0;
       for (let i = 0; i < Math.min(input.length, cmd.length); i++) {
         if (input[i] !== cmd[i]) diff++;
@@ -167,19 +176,16 @@ const terminalPortfolio = (() => {
   const commands = {
     help: () => `
 <span class="header">Available Commands</span>
-
 <span class="suggest">About Me & Work</span>
 - <span class="command">about-me</span>: Display information about me
 - <span class="command">my-projects</span>: Display the list of my personal projects
 - <span class="command">technical-skills</span>: Display my technical and soft skills
 - <span class="command">coursework</span>: Display my relevant coursework
 - <span class="command">getcv</span>: Download my CV
-
 <span class="suggest">Profiles</span>
 - <span class="command">getgithub</span>: Link to my GitHub
 - <span class="command">getlinkedin</span>: Link to my LinkedIn
 - <span class="command">coding-profiles</span>: Display my coding profiles
-
 <span class="suggest">Personal Interests</span>
 - <span class="command">hobbies</span>: Display my hobbies
 - <span class="command">interests</span>: Display my areas of interest
@@ -188,7 +194,6 @@ const terminalPortfolio = (() => {
 - <span class="command">history</span>: Show command history
 - <span class="command">clear</span>: Clean the terminal
 - <span class="command">themes</span>: Change the terminal theme
-
 <span class="note">Use ↑↓ arrows to browse command history, Tab to auto-complete</span>
 `,
     clear: () => {
@@ -204,64 +209,27 @@ const terminalPortfolio = (() => {
       }
       return commandHistory.map((cmd, i) => `<span class="message">${i + 1}. ${cmd}</span>`).join("<br>");
     },
-    "about-me": () => {
-      const about = JSON.parse(content.about);
-      return formatLibrarySection(about, "About Me");
-    },
-    hobbies: () => {
-      const hobbies = JSON.parse(content.hobbies);
-      return formatLibrarySection(hobbies, "Hobbies");
-    },
-    interests: () => {
-      const interests = JSON.parse(content.interests);
-      return formatLibrarySection(interests, "Interests");
-    },
-    "technical-skills": () => {
-      const skills = JSON.parse(content.technical_skills);
-      return formatLibrarySection(skills, "Technical Skills");
-    },
-    "coding-profiles": () => {
-      const profiles = JSON.parse(content.coding_profiles);
-      return formatLibrarySection(profiles, "Coding Profiles");
-    },
-    coursework: () => {
-      const coursework = JSON.parse(content.coursework);
-      return formatLibrarySection(coursework, "Coursework");
-    },
-    "my-projects": () => {
-      const projects = JSON.parse(content.projects);
-      return projects.map(formatProject).join("");
-    },
+    "about-me": () => formatLibrarySection(JSON.parse(content.about), "About Me"),
+    hobbies: () => formatLibrarySection(JSON.parse(content.hobbies), "Hobbies"),
+    interests: () => formatLibrarySection(JSON.parse(content.interests), "Interests"),
+    "technical-skills": () => formatLibrarySection(JSON.parse(content.technical_skills), "Technical Skills"),
+    "coding-profiles": () => formatLibrarySection(JSON.parse(content.coding_profiles), "Coding Profiles"),
+    coursework: () => formatLibrarySection(JSON.parse(content.coursework), "Coursework"),
+    "my-projects": () => JSON.parse(content.projects).map(formatProject).join(""),
     getcv: async () => {
-      const baseurl = "/Portfolio_Terminal"; 
-      const resumeUrl = `${baseurl}/resume_sneha_bichkunde.pdf`;
-      
+      const resumeUrl = "/Portfolio_Terminal/resume_sneha_bichkunde.pdf";
       try {
-        // Fetch the resume file as a blob
         const response = await fetch(resumeUrl);
-        
-        // Check if the request was successful
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        // Convert the response to a blob
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const blob = await response.blob();
-        
-        // Create a temporary URL for the blob
         const url = window.URL.createObjectURL(blob);
-        
-        // Create a temporary anchor element to trigger the download
         const link = document.createElement("a");
         link.href = url;
-        link.download = "resume_sneha_bichkunde.pdf"; // Name of the file when downloaded
+        link.download = "resume_sneha_bichkunde.pdf";
         document.body.appendChild(link);
         link.click();
-        
-        // Clean up: revoke the temporary URL and remove the link
         window.URL.revokeObjectURL(url);
         document.body.removeChild(link);
-        
         return `<span class="message">Downloading CV... Check your downloads!</span>`;
       } catch (error) {
         console.error("Download error:", error);
@@ -269,30 +237,28 @@ const terminalPortfolio = (() => {
       }
     },
     getlinkedin: () => {
-      const linkedin = JSON.parse(content.linkedin);
-      window.open(linkedin.url, "_blank");
-      return `<span class="message">${linkedin.message}</span>`;
+      window.open("https://www.linkedin.com/in/sneha-bichkunde-aba203269/", "_blank");
+      return `<span class="message">Opening LinkedIn profile...</span>`;
     },
     getgithub: () => {
-      const github = JSON.parse(content.github);
-      window.open(github.url, "_blank");
-      return `<span class="message">${github.message}</span>`;
+      window.open("https://github.com/snehabichkunde", "_blank");
+      return `<span class="message">Opening GitHub profile...</span>`;
     },
     themes: (args) => {
-      if (!args[0]) {
-        return `
-<span class="message">Available themes: dark, light, matrix, hello_kitty</span>
-<span class="message">Usage: themes <theme-name></span>
-        `;
-      }
-      if (["dark", "light", "matrix", "hello_kitty"].includes(args[0])) {
-        document.body.className = `theme-${args[0]}`;
-        localStorage.setItem("theme", args[0]);
-        window.dispatchEvent(new CustomEvent("themeChanged", { detail: { theme: args[0] } }));
-        return `<span class="message">Theme switched to ${args[0]}</span>`;
-      }
-      return `<span class="error">Invalid theme. Available themes: dark, light, matrix, hello_kitty</span>`;
-    }
+  const validThemes = ["dark", "light", "matrix", "hello_kitty"];
+  if (!args[0]) {
+    return `<span class="message">Available themes: ${validThemes.join(", ")}</span><br><span class="message">Usage: themes <theme-name></span>`;
+  }
+  const theme = args[0];
+  if (validThemes.includes(theme)) {
+    document.body.className = `theme-${theme}`;
+    localStorage.setItem("theme", theme);
+    // This is the crucial line that was missing. It notifies other scripts of the change.
+    window.dispatchEvent(new CustomEvent("themeChanged", { detail: { theme } }));
+    return `<span class="message">Theme switched to ${theme}</span>`;
+  }
+  return `<span class="error">Invalid theme. Available themes: ${validThemes.join(", ")}</span>`;
+  }
   };
 
   terminal.addEventListener("click", focusInput);
@@ -300,129 +266,85 @@ const terminalPortfolio = (() => {
   terminal.addEventListener("keydown", async (e) => {
     const input = terminal.querySelector(".input:last-child");
     if (!input) return;
-  
-    // At the top of your IIFE, initialize tabPressCount
-let tabPressCount = 0;
 
-if (e.key === "Tab") {
-    e.preventDefault();
-    const input = terminal.querySelector(".input:last-child");
-    const inputText = input.textContent.trim();
-    if (!inputText) return; 
-
-    const commandsList = Object.keys(commands);
-    const matches = commandsList.filter(cmd => cmd.startsWith(inputText));
-
-    if (matches.length === 0) {
-        return; 
-    }
-
-    if (matches.length === 1) {
-        input.textContent = matches[0] + " ";
-        focusInput();
-    } else {
-        const commonPrefix = findLongestCommonPrefix(matches);
-        
-        if (input.textContent === commonPrefix) {
-            const suggestions = `Available commands: ${matches.join("  ")}`;
-            typeOutput(`<div class="suggest">${suggestions}</div>`, () => {
-                input.textContent = commonPrefix;
-                focusInput();
-            });
-        } else {
-            input.textContent = commonPrefix;
-            focusInput();
-        }
-    }
-}
-  
     if (e.key === "Enter") {
       e.preventDefault();
       const inputText = input.textContent.trim();
       let [command, ...args] = inputText.split(" ");
       let output = "";
-  
+
       if (inputText !== "") {
         commandHistory.push(inputText);
         if (commandHistory.length > 100) commandHistory.shift();
       }
       historyIndex = -1;
-  
+      currentInputBuffer = "";
+
       if (inputText === "") {
         terminal.appendChild(createPrompt());
         scrollToBottom();
-        focusInput();
         return;
       }
-  
+
       if (commands[command]) {
         const result = commands[command](args);
         output = result instanceof Promise ? await result : result;
       } else {
         output = `<span class="error">${command}: command not found</span>${suggestCommand(command)}`;
       }
-  
+
       if (output !== null) {
-        typeOutput(output, () => {
-          focusInput();
-        });
+        typeOutput(output, focusInput);
       }
     }
-  
-    if (e.key === "ArrowUp" && !e.ctrlKey) {
+
+    if (e.key === "ArrowUp") {
       e.preventDefault();
-      if (historyIndex > 0) {
-        historyIndex--;
-        input.textContent = commandHistory[historyIndex];
-      } else if (commandHistory.length > 0 && historyIndex === -1) {
+      if (historyIndex === -1) {
+        currentInputBuffer = input.textContent;
         historyIndex = commandHistory.length - 1;
+      } else if (historyIndex > 0) {
+        historyIndex--;
+      }
+      if (commandHistory[historyIndex] !== undefined) {
         input.textContent = commandHistory[historyIndex];
       }
       focusInput();
     }
-  
-    if (e.key === "ArrowDown" && !e.ctrlKey) {
+
+    if (e.key === "ArrowDown") {
       e.preventDefault();
       if (historyIndex >= 0 && historyIndex < commandHistory.length - 1) {
         historyIndex++;
         input.textContent = commandHistory[historyIndex];
       } else {
-        input.textContent = "";
         historyIndex = -1;
+        input.textContent = currentInputBuffer;
       }
       focusInput();
     }
-  
+
     if (e.key === "Tab") {
       e.preventDefault();
       const inputText = input.textContent.trim();
-      const [command, ...args] = inputText.split(" ");
-      const commandsList = Object.keys(commands);
-      const matches = commandsList.filter(cmd => cmd.startsWith(command));
-  
-      if (matches.length === 0) {
-        focusInput();
-        return;
-      }
-  
+      if (!inputText) return;
+
+      const matches = Object.keys(commands).filter(cmd => cmd.startsWith(inputText));
+
       if (matches.length === 1) {
-        input.textContent = matches[0] + (args.length ? " " + args.join(" ") : " ");
-        tabPressCount = 0;
-        focusInput();
-      } else {
-        if (tabPressCount === 0) {
-          const suggestions = `Available commands: ${matches.join(" ")}`;
-          typeOutput(`<div class="suggest">${suggestions}</div>`, () => {
+        input.textContent = matches[0] + " ";
+      } else if (matches.length > 1) {
+        const commonPrefix = findLongestCommonPrefix(matches);
+        if (input.textContent === commonPrefix) {
+          typeOutput(`<div class="suggest">${matches.join("  ")}</div>`, () => {
+            input.textContent = commonPrefix;
             focusInput();
           });
-          tabPressCount = 1;
         } else {
-          const currentIndex = tabPressCount % matches.length;
-          input.textContent = matches[currentIndex] + (args.length ? " " + args.join(" ") : " ");
-          tabPressCount++;
-          focusInput();
+          input.textContent = commonPrefix;
         }
       }
+      focusInput();
     }
   });
 
@@ -433,25 +355,20 @@ if (e.key === "Tab") {
   });
 
   return {
-    init: () => {
+    init: async () => {
       terminal.innerHTML = "";
       const savedTheme = localStorage.getItem("theme") || "dark";
       document.body.className = `theme-${savedTheme}`;
-      typeWelcomeMessage();
+      await typeWelcomeMessage();
     }
   };
 })();
 
-
-// helper function to find the longest common prefix 
 function findLongestCommonPrefix(strs) {
-  if (!strs.length) return "";
-  if (strs.length === 1) return strs[0];
-  
+  if (!strs || strs.length === 0) return "";
   strs.sort();
   const first = strs[0];
   const last = strs[strs.length - 1];
-  
   let i = 0;
   while (i < first.length && first[i] === last[i]) {
     i++;
