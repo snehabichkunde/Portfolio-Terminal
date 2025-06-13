@@ -32,9 +32,6 @@ const terminalPortfolio = (() => {
         "github": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree"
       }
     ]`,
-    github: `{"url":"https://github.com/snehabichkunde","message":"Opening GitHub profile..."}`,
-    linkedin: `{"url":"https://www.linkedin.com/in/sneha-bichkunde-aba203269/","message":"Opening LinkedIn profile..."}`,
-    cv: `{"message":"CV functionality coming soon!"}`
   };
 
   function getPrompt() {
@@ -304,9 +301,40 @@ const terminalPortfolio = (() => {
     const input = terminal.querySelector(".input:last-child");
     if (!input) return;
   
-    if (e.key !== "Tab") {
-      tabPressCount = 0; 
+    // At the top of your IIFE, initialize tabPressCount
+let tabPressCount = 0;
+
+if (e.key === "Tab") {
+    e.preventDefault();
+    const input = terminal.querySelector(".input:last-child");
+    const inputText = input.textContent.trim();
+    if (!inputText) return; 
+
+    const commandsList = Object.keys(commands);
+    const matches = commandsList.filter(cmd => cmd.startsWith(inputText));
+
+    if (matches.length === 0) {
+        return; 
     }
+
+    if (matches.length === 1) {
+        input.textContent = matches[0] + " ";
+        focusInput();
+    } else {
+        const commonPrefix = findLongestCommonPrefix(matches);
+        
+        if (input.textContent === commonPrefix) {
+            const suggestions = `Available commands: ${matches.join("  ")}`;
+            typeOutput(`<div class="suggest">${suggestions}</div>`, () => {
+                input.textContent = commonPrefix;
+                focusInput();
+            });
+        } else {
+            input.textContent = commonPrefix;
+            focusInput();
+        }
+    }
+}
   
     if (e.key === "Enter") {
       e.preventDefault();
