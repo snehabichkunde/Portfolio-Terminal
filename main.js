@@ -17,9 +17,38 @@ const terminalPortfolio = (() => {
     coding_profiles: `{"GeeksforGeeks":"Active contributor with 500+ problems solved in Data Structures and Algorithms, https://www.geeksforgeeks.org/user/bichkund5ad6/","LeetCode":"Solved 100+ problems, focusing on algorithms and system design challenges, https://leetcode.com/u/SnehaBichkunde/"}`,
     coursework: `{"coursework":"Operating Systems, Data Structures & Algorithms, DBMS, Computer Networks"}`,
     projects: `[
-      { "name": "Digital Diary", "description": "A full-stack diary app to securely store and manage personal stories.", "tech": "React.js, Node.js, MongoDB, JWT", "link": "https://digital-diary-sneha.netlify.app/", "github": "https://github.com/snehabichkunde/DigitalDiary" },
-      { "name": "my_shell", "description": "A POSIX-compliant shell in C to enhance terminal interaction.", "tech": "C, ncurses", "github": "https://github.com/snehabichkunde/c-shell" },
-      { "name": "Boids Flocking", "description": "A flocking simulation in p5.js to model bird-like behavior.", "tech": "p5.js, JavaScript", "link": "https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/", "github": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree" }
+      { 
+        "name": "Digital Diary", 
+        "description": "A full-stack diary app to securely store and manage personal stories.",
+        "tech": "React.js, Node.js, MongoDB, JWT", 
+        "link": "https://digital-diary-sneha.netlify.app/", 
+        "github": "https://github.com/snehabichkunde/DigitalDiary" 
+      },
+      { 
+        "name": "my_shell", 
+        "description": "A POSIX-compliant shell in C to enhance terminal interaction.",
+        "tech": "C, ncurses", 
+        "github": "https://github.com/snehabichkunde/c-shell" 
+      },
+      { 
+        "name": "Boids Flocking", 
+        "description": "A flocking simulation in p5.js to model bird-like behavior.",
+        "tech": "p5.js, JavaScript", 
+        "link": "https://snehabichkunde.github.io/Flocking-Simulation-using-Quadtree/", 
+        "github": "https://github.com/snehabichkunde/Flocking-Simulation-using-Quadtree" 
+      },
+      { 
+        "name": "Portfolio Terminal", 
+        "description": "An interactive terminal-based portfolio to showcase my skills and projects. You're using it right now!",
+        "tech": "JavaScript, HTML, CSS", 
+        "github": "https://github.com/snehabichkunde/Portfolio_Terminal" 
+      },
+      { 
+        "name": "Snake Game", 
+        "description": "A classic Snake game built in C. The snake moves, eats apples to grow, and the game ends on collision.",
+        "tech": "C, SDL2", 
+        "github": "https://github.com/your-username/your-snake-game-repo" 
+      }
     ]`,
   };
   
