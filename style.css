@@ -4,8 +4,6 @@
 /* 
   ==============================================
     CSS VARIABLES (CUSTOM PROPERTIES)
-    - Default theme is "Catppuccin Dark" inspired.
-    - Each .theme-* class just overrides these variables.
   ==============================================
 */
 :root {
@@ -58,7 +56,6 @@ body {
   transition: background-color 0.3s ease;
 }
 
-/* CORRECTED ID SELECTOR */
 #particles {
   position: fixed;
   top: 0;
@@ -81,12 +78,12 @@ body {
   display: flex;
   flex-direction: column;
   z-index: 1;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: all 0.3s ease; /* Transition all properties */
 }
 
 /* 
   ==============================================
-    TERMINAL HEADER
+    TERMINAL HEADER & CONTENT
   ==============================================
 */
 .terminal-header {
@@ -100,14 +97,7 @@ body {
   transition: background 0.3s ease;
 }
 
-.circle {
-  height: 12px;
-  width: 12px;
-  border-radius: 50%;
-  margin-right: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-}
-
+.circle { height: 12px; width: 12px; border-radius: 50%; margin-right: 8px; border: 1px solid rgba(0, 0, 0, 0.2); }
 .red { background-color: #ff5f57; }
 .yellow { background-color: #ffbd2e; }
 .green { background-color: #28c940; }
@@ -120,16 +110,11 @@ body {
   transition: color 0.3s ease;
 }
 
-/* 
-  ==============================================
-    TERMINAL CONTENT & TYPOGRAPHY
-  ==============================================
-*/
 #main {
   flex: 1;
   color: var(--text-primary);
   font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(12px, 1.8vw, 14px);
+  font-size: clamp(13px, 1.8vw, 15px); /* Slightly larger base font size */
   line-height: 1.6;
   padding: 1rem;
   overflow-y: auto;
@@ -139,105 +124,37 @@ body {
   transition: color 0.3s ease;
 }
 
-.prompt-line {
-  display: flex;
-  align-items: flex-start;
-}
-
-#main .prompt {
-  color: var(--text-prompt);
-  margin-right: 0.5rem;
-}
-
-#main .input {
-  flex-grow: 1;
-  background: transparent;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  outline: none;
-  caret-color: var(--caret-color);
-}
-
-#main .input:empty:before {
-  content: "\200b";
-}
-
-#main .output {
-  margin-bottom: 0.5rem;
-}
-
+.prompt-line { display: flex; align-items: flex-start; }
+#main .prompt { color: var(--text-prompt); margin-right: 0.5rem; }
+#main .input { flex-grow: 1; background: transparent; border: none; color: inherit; font-family: inherit; font-size: inherit; line-height: inherit; outline: none; caret-color: var(--caret-color); }
+#main .input:empty:before { content: "\200b"; }
+#main .output { margin-bottom: 0.5rem; }
 #main .header { color: var(--text-header); }
 #main .command { color: var(--text-command); }
 #main .error { color: var(--text-error); }
 #main .message { color: var(--text-primary); }
 #main .suggest { color: var(--text-suggestion); }
 #main .note { color: var(--text-secondary); font-style: italic; }
+#main .link { color: var(--text-link); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+#main .link:hover { text-decoration: underline; color: var(--text-link-hover); }
 
-#main .link {
-  color: var(--text-link);
-  text-decoration: none;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-#main .link:hover {
-  text-decoration: underline;
-  color: var(--text-link-hover);
-}
-
-/* 
-  ==============================================
-    COMPONENT STYLES (Projects, Library, etc.)
-  ==============================================
-*/
-.project-container {
-  margin: 1rem 0;
-  padding-left: 1rem;
-  border-left: 3px solid var(--accent-border);
-}
+/* Component Styles (Projects, Library) */
+.project-container { margin: 1rem 0; padding-left: 1rem; border-left: 3px solid var(--accent-border); }
 .project-name { font-weight: bold; font-size: 1.1em; color: var(--text-header); }
 .project-description { margin: 0.25rem 0; color: var(--text-secondary); }
 .project-tech { font-style: italic; color: var(--text-link); }
 .project-links { margin-top: 0.5rem; }
 .project-links .link { margin-right: 1rem; }
 
-.library-container {
-  margin: 1rem 0;
-  padding: 0.75rem;
-  background: var(--library-bg);
-  border-left: 4px solid var(--library-border);
-  border-radius: 4px;
-}
-.library-title {
-  color: var(--text-header);
-  font-weight: bold;
-  font-size: 1.1em;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-.library-item {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0.25rem 0;
-}
-.library-key {
-  color: var(--library-key);
-  font-weight: bold;
-  margin-right: 1rem;
-  min-width: 150px;
-}
+.library-container { margin: 1rem 0; padding: 0.75rem; background: var(--library-bg); border-left: 4px solid var(--library-border); border-radius: 4px; }
+.library-title { color: var(--text-header); font-weight: bold; font-size: 1.1em; text-transform: uppercase; display: block; margin-bottom: 0.5rem; }
+.library-item { display: flex; flex-wrap: wrap; margin: 0.25rem 0; }
+.library-key { color: var(--library-key); font-weight: bold; margin-right: 1rem; min-width: 150px; }
 .library-value { flex: 1; color: var(--text-primary); }
 .library-link { color: var(--text-link); }
 .library-link:hover { color: var(--text-link-hover); }
 
-/* 
-  ==============================================
-    SCROLLBAR
-  ==============================================
-*/
+/* Scrollbar */
 #main::-webkit-scrollbar { width: 8px; }
 #main::-webkit-scrollbar-track { background: var(--scrollbar-track); }
 #main::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
@@ -245,97 +162,43 @@ body {
 
 /* 
   ==============================================
-    THEME DEFINITIONS
+    THEME DEFINITIONS (Unchanged)
   ==============================================
 */
-
-/* --- Light Theme (Solarized Inspired) --- */
-.theme-light {
-  --bg-body: #fdf6e3;
-  --bg-terminal: rgba(253, 246, 227, 0.9);
-  --bg-header: linear-gradient(to bottom, #eee8d5, #fdf6e3);
-  --border-terminal: rgba(0, 0, 0, 0.1);
-  --text-primary: #586e75;
-  --text-secondary: #839496;
-  --text-title: #073642;
-  --text-header: #b58900;
-  --text-prompt: #2aa198;
-  --text-command: #cb4b16;
-  --text-error: #dc322f;
-  --text-link: #6c71c4;
-  --text-link-hover: #d33682;
-  --text-suggestion: #b58900;
-  --accent-border: #cb4b16;
-  --library-bg: rgba(7, 54, 66, 0.05);
-  --library-border: #268bd2;
-  --library-key: #b58900;
-  --scrollbar-track: rgba(0, 0, 0, 0.05);
-  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
-  --caret-color: var(--text-prompt);
-}
-
-/* --- Matrix Theme --- */
-.theme-matrix {
-  --bg-body: #000;
-  --bg-terminal: rgba(10, 10, 10, 0.9);
-  --bg-header: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
-  --border-terminal: rgba(0, 255, 0, 0.2);
-  --text-primary: #00ff41;
-  --text-secondary: #00c732;
-  --text-title: #00ff41;
-  --text-header: #afff00;
-  --text-prompt: #00ff41;
-  --text-command: #50fa7b;
-  --text-error: #ff5555;
-  --text-link: #00f0a0;
-  --text-link-hover: #00ffff;
-  --text-suggestion: #afff00;
-  --accent-border: #50fa7b;
-  --library-bg: rgba(0, 255, 0, 0.05);
-  --library-border: #00ff41;
-  --library-key: #afff00;
-  --scrollbar-track: rgba(0, 255, 0, 0.05);
-  --scrollbar-thumb: rgba(0, 255, 0, 0.2);
-  --caret-color: var(--text-prompt);
-}
-
-/* --- Hello Kitty Theme (Softer) --- */
-.theme-hello_kitty {
-  --bg-body: #fff0f5;
-  --bg-terminal: rgba(255, 240, 245, 0.9);
-  --bg-header: linear-gradient(to bottom, #ffe4e1, #ffc1cc);
-  --border-terminal: rgba(255, 182, 193, 0.4);
-  --text-primary: #db7093;
-  --text-secondary: #ff85a1;
-  --text-title: #c71585;
-  --text-header: #c71585;
-  --text-prompt: #ff69b4;
-  --text-command: #ff4500;
-  --text-error: #dc143c;
-  --text-link: #9370db;
-  --text-link-hover: #c71585;
-  --text-suggestion: #ff69b4;
-  --accent-border: #ff69b4;
-  --library-bg: rgba(219, 112, 147, 0.1);
-  --library-border: #ffb6c1;
-  --library-key: #ff4500;
-  --scrollbar-track: rgba(219, 112, 147, 0.1);
-  --scrollbar-thumb: rgba(219, 112, 147, 0.4);
-  --caret-color: var(--text-prompt);
-}
+.theme-light { --bg-body: #fdf6e3; --bg-terminal: rgba(253, 246, 227, 0.9); --bg-header: linear-gradient(to bottom, #eee8d5, #fdf6e3); --border-terminal: rgba(0, 0, 0, 0.1); --text-primary: #586e75; --text-secondary: #839496; --text-title: #073642; --text-header: #b58900; --text-prompt: #2aa198; --text-command: #cb4b16; --text-error: #dc322f; --text-link: #6c71c4; --text-link-hover: #d33682; --text-suggestion: #b58900; --accent-border: #cb4b16; --library-bg: rgba(7, 54, 66, 0.05); --library-border: #268bd2; --library-key: #b58900; --scrollbar-track: rgba(0, 0, 0, 0.05); --scrollbar-thumb: rgba(0, 0, 0, 0.2); --caret-color: var(--text-prompt); }
+.theme-matrix { --bg-body: #000; --bg-terminal: rgba(10, 10, 10, 0.9); --bg-header: linear-gradient(to bottom, #1a1a1a, #0a0a0a); --border-terminal: rgba(0, 255, 0, 0.2); --text-primary: #00ff41; --text-secondary: #00c732; --text-title: #00ff41; --text-header: #afff00; --text-prompt: #00ff41; --text-command: #50fa7b; --text-error: #ff5555; --text-link: #00f0a0; --text-link-hover: #00ffff; --text-suggestion: #afff00; --accent-border: #50fa7b; --library-bg: rgba(0, 255, 0, 0.05); --library-border: #00ff41; --library-key: #afff00; --scrollbar-track: rgba(0, 255, 0, 0.05); --scrollbar-thumb: rgba(0, 255, 0, 0.2); --caret-color: var(--text-prompt); }
+.theme-hello_kitty { --bg-body: #fff0f5; --bg-terminal: rgba(255, 240, 245, 0.9); --bg-header: linear-gradient(to bottom, #ffe4e1, #ffc1cc); --border-terminal: rgba(255, 182, 193, 0.4); --text-primary: #db7093; --text-secondary: #ff85a1; --text-title: #c71585; --text-header: #c71585; --text-prompt: #ff69b4; --text-command: #ff4500; --text-error: #dc143c; --text-link: #9370db; --text-link-hover: #c71585; --text-suggestion: #ff69b4; --accent-border: #ff69b4; --library-bg: rgba(219, 112, 147, 0.1); --library-border: #ffb6c1; --library-key: #ff4500; --scrollbar-track: rgba(219, 112, 147, 0.1); --scrollbar-thumb: rgba(219, 112, 147, 0.4); --caret-color: var(--text-prompt); }
 
 /* 
   ==============================================
-    RESPONSIVE MEDIA QUERIES
+    GITHUB CORNER RIBBON
   ==============================================
 */
+#github-corner-ribbon { z-index: 50; }
+#github-corner-ribbon svg { color: var(--bg-terminal); fill: var(--text-prompt); transition: fill 0.3s ease; }
+#github-corner-ribbon:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%, 100% { transform: rotate(0); } 20%, 60% { transform: rotate(-25deg); } 40%, 80% { transform: rotate(10deg); } }
+
+.theme-light #github-corner-ribbon svg { fill: var(--text-prompt); color: var(--bg-body); }
+.theme-matrix #github-corner-ribbon svg { fill: var(--text-primary); color: var(--bg-body); }
+.theme-hello_kitty #github-corner-ribbon svg { fill: var(--text-prompt); color: var(--bg-body); }
+
+
+/* 
+  ==============================================
+    FULLY RESPONSIVE & MOBILE-FIRST STYLES
+    (This section replaces the old media queries)
+  ==============================================
+*/
+
+/* === For Tablets & Smaller Desktops === */
 @media (max-width: 768px) {
   .terminal-wrapper {
     width: 95%;
     height: 90vh;
   }
   .library-item {
-    flex-direction: column;
+    flex-direction: column; /* Stack key/value pairs vertically */
     align-items: flex-start;
   }
   .library-key {
@@ -344,13 +207,32 @@ body {
   }
 }
 
+/* === For Mobile Phones (< 480px) === */
 @media (max-width: 480px) {
   body {
-    padding: 0.5rem;
+    padding: 0; /* Remove padding for a full-screen experience */
   }
   .terminal-wrapper {
     width: 100%;
-    height: 95vh;
+    /* Use dynamic viewport height. This is KEY to fixing the on-screen keyboard issue. */
+    height: 100dvh; 
     border-radius: 0;
+    border: none;
+    backdrop-filter: none; /* Can be performance-intensive on mobile */
+  }
+  #main {
+    padding: 0.75rem; /* Reduce padding inside the terminal */
+  }
+  
+  /* Make the ribbon smaller and less intrusive on mobile */
+  #github-corner-ribbon svg {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Disable the hover animation on touch devices */
+  #github-corner-ribbon:hover .octo-arm,
+  #github-corner-ribbon .octo-arm {
+    animation: none;
   }
 }
