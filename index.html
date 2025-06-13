@@ -12,7 +12,7 @@
 </head>
 <body>
 
-  <!-- GitHub Corner Ribbon (for Desktop) with SVG Paths FILLED IN -->
+  <!-- GitHub Corner Ribbon (for Desktop) -->
   <a href="https://github.com/snehabichkunde/Portfolio_Terminal" target="_blank" rel="noopener noreferrer" id="github-corner-ribbon" aria-label="View source on GitHub">
     <svg width="80" height="80" viewBox="0 0 250 250" style="position: absolute; top: 0; right: 0; border: 0;" aria-hidden="true">
       <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" class="ribbon-bg"></path>
@@ -23,13 +23,8 @@
 
   <div id="particles"></div>
 
-  <!-- Terminal structure now supports a dedicated footer -->
   <div class="terminal-wrapper" role="application" aria-label="Portfolio Terminal">
     <header class="terminal-header" role="toolbar">
-      <!-- GitHub Icon (for Mobile) -->
-      <a href="https://github.com/snehabichkunde/Portfolio_Terminal" target="_blank" rel="noopener noreferrer" class="mobile-github-link" aria-label="View source on GitHub">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-      </a>
       <span class="circle red" aria-label="Close"></span>
       <span class="circle yellow" aria-label="Minimize"></span>
       <span class="circle green" aria-label="Maximize"></span>
@@ -37,20 +32,11 @@
     </header>
     
     <main id="main" role="log" aria-live="polite"></main>
-
-    <!-- Dedicated Footer for Mobile Input -->
-    <footer class="terminal-footer">
-      <div class="quick-commands">
-        <!-- Buttons will be generated here by JS -->
-      </div>
-      <div class="input-area">
-        <span class="prompt mobile-prompt">></span>
-        <div id="mobile-input" class="input" contenteditable="true" spellcheck="false"></div>
-        <button id="send-btn" aria-label="Send Command">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-        </button>
-      </div>
-    </footer>
+  </div>
+  
+  <!-- NEW: Command bar is now outside the terminal wrapper to be fixed at the bottom of the viewport -->
+  <div id="mobile-command-bar">
+    <!-- Buttons will be generated here by JS -->
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
