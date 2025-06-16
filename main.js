@@ -201,14 +201,29 @@ const terminalPortfolio = (() => {
   // === CORE LOGIC ===
 
   // Restored Welcome Message function
+// === CORE LOGIC ===
+
+// REPLACED Welcome Message function
 async function typeWelcomeMessage() {
-  const welcomeMessage = `
+  let welcomeMessage;
+  const TYPING_SPEED_MS = 30;
+  const isMobile = window.innerWidth <= 600;
+
+  if (isMobile) {
+    welcomeMessage = `
+<div class="message">Session initialized.</div>
+<div class="header">Welcome to Sneha's Portfolio</div>
+<div class="suggest">Tap the command chips below to explore.</div>
+`;
+  } else {
+    welcomeMessage = `
 <div class="message">Initializing session for user: guest...</div>
 <div class="message">Connection established.</div>
 <div class="header">Welcome to Sneha Bichkunde's digital space.</div>
 <div class="suggest">Run <span class="command">help</span> to see available documentation.</div>
 `;
-  const TYPING_SPEED_MS = 30;
+  }
+
   let isTyping = true;
   const skipAnimation = () => { isTyping = false; };
   document.addEventListener('keydown', skipAnimation, { once: true });
@@ -243,10 +258,12 @@ async function typeWelcomeMessage() {
   document.removeEventListener('keydown', skipAnimation);
   document.removeEventListener('click', skipAnimation);
 
-  // Instead of running a command, we just add the first empty prompt for the user.
-  appendNewDesktopPrompt();
+  if (!isMobile) {
+    appendNewDesktopPrompt();
+    focusInput();
+  }
+  
   scrollToBottom();
-  focusInput();
 }
   function typeOutput(output) {
     const outputDiv = document.createElement("div");
