@@ -122,7 +122,7 @@ const terminalPortfolio = (() => {
 - <span class="command">my-projects</span>: Display my personal projects
 - <span class="command">technical-skills</span>: Show my technical skills
 - <span class="command">coursework</span>: List relevant university coursework
-<span class="command">getcv</span>: Download my CV
+- <span class="command">getcv</span>: Download my CV
 <span class="suggest">Profiles</span>
 - <span class="command">getgithub</span>: Open my GitHub profile
 - <span class="command">getlinkedin</span>: Open my LinkedIn profile
@@ -149,7 +149,7 @@ const terminalPortfolio = (() => {
     "coding-profiles": () => formatLibrarySection(JSON.parse(content.coding_profiles), "Coding Profiles"),
     coursework: () => formatLibrarySection(JSON.parse(content.coursework), "Coursework"),
     "my-projects": () => JSON.parse(content.projects).map(formatProject).join(""),
-    getcv: async () => {
+    "getcv": async () => {
       
       const resumeUrl = "resume_sneha_bichkunde.pdf";
 
