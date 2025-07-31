@@ -172,10 +172,9 @@ body {
 .theme-matrix #github-corner-ribbon svg { fill: var(--text-primary); color: var(--bg-body); }
 .theme-hello_kitty #github-corner-ribbon svg { fill: var(--text-prompt); color: var(--bg-body); }
 
-
 /* 
   ==============================================
-    MOBILE-FIRST & RESPONSIVE STYLES
+    MOBILE-First & RESPONSIVE STYLES
   ==============================================
 */
 
@@ -244,12 +243,19 @@ body {
     overflow-x: auto;
     z-index: 10;
     border-top: 1px solid var(--border-terminal);
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    -webkit-mask-image: linear-gradient(to right, black 85%, transparent);
-    mask-image: linear-gradient(to right, black 85%, transparent);
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
-  #mobile-command-bar::-webkit-scrollbar { display: none; }
+  #mobile-command-bar::-webkit-scrollbar {
+    height: 8px;
+  }
+  #mobile-command-bar::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+  #mobile-command-bar::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 4px;
+  }
   .command-chip {
     flex-shrink: 0;
     background-color: var(--library-bg);
@@ -262,11 +268,32 @@ body {
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s, transform 0.1s;
   }
-  .command-chip:active { transform: scale(0.95); }
+  .command-chip:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  .command-chip:active {
+    transform: scale(0.95);
+  }
   .command-chip.back-chip {
     background-color: var(--text-prompt);
     color: var(--bg-body);
     font-weight: bold;
+  }
+  .highlight-chip {
+    background-color: var(--library-border); /* Blue for visibility */
+    color: var(--bg-body);
+    font-weight: bold;
+  }
+  .scroll-indicator {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+  }
+  .scroll-indicator span {
+    opacity: 0.7;
   }
 
   /* Desktop Recommendation Banner */

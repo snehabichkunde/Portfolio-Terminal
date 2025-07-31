@@ -113,9 +113,25 @@ const terminalPortfolio = (() => {
     return suggestion ? `<br><span class="suggest">Did you mean '<span class="command">${suggestion}</span>'?</span>` : "";
   }
   
-  // === COMMANDS OBJECT (FULL VERSION RESTORED) ===
+  // === COMMANDS OBJECT ===
   const commands = {
-    help: () => `
+    help: () => {
+      if (window.innerWidth <= 600) {
+        return `
+<span class="header">Explore Sneha's Portfolio</span>
+<span class="suggest">Tap a command chip to view:</span>
+- <span class="command">about-me</span>: Who I am
+- <span class="command">my-projects</span>: My projects
+- <span class="command">technical-skills</span>: My skills
+- <span class="command">getcv</span>: Download my CV
+- <span class="command">getgithub</span>: My GitHub
+- <span class="command">getlinkedin</span>: My LinkedIn
+- <span class="command">themes</span>: Change theme
+- <span class="command">clear</span>: Clear screen
+<span class="note">Scroll the chips below to see all commands.</span>
+`;
+      }
+      return `
 <span class="header">Available Commands</span>
 <span class="suggest">About Me & Work</span>
 - <span class="command">about-me</span>: Display information about me
@@ -133,7 +149,8 @@ const terminalPortfolio = (() => {
 - <span class="command">clear</span>: Clear the terminal
 - <span class="command">themes</span>: Change the terminal theme
 <span class="note">On desktop, use ↑↓ arrows for history & Tab for auto-complete.</span>
-`,
+`;
+    },
     clear: () => {
       terminal.innerHTML = "";
       return null;
@@ -150,38 +167,30 @@ const terminalPortfolio = (() => {
     coursework: () => formatLibrarySection(JSON.parse(content.coursework), "Coursework"),
     "my-projects": () => JSON.parse(content.projects).map(formatProject).join(""),
     "getcv": async () => {
-      
       const resumeUrl = "resume_sneha_bichkunde.pdf";
-
       try {
         const response = await fetch(resumeUrl);
-
         if (!response.ok) {
           if (response.status === 404) {
-             throw new Error(`File not found at path: ${resumeUrl}`);
+            throw new Error(`File not found at path: ${resumeUrl}`);
           }
           throw new Error(`Network error! Status: ${response.status}`);
         }
-
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
-
         link.href = url;
         link.download = "resume_sneha_bichkunde.pdf";
-        document.body.appendChild(link); // Append to body to make it clickable
-        link.click(); // Programmatically click the link to trigger download
-        
+        document.body.appendChild(link);
+        link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
-
         return `<span class="message">Downloading CV... Please check your downloads folder!</span>`;
       } catch (error) {
         console.error("CV Download failed:", error);
         return `<span class="error">Error: Could not download CV. The file may be missing or inaccessible. Check console for details.</span>`;
       }
     },
-    // === FIX END ===
     getlinkedin: () => { window.open("https://www.linkedin.com/in/sneha-bichkunde-aba203269/", "_blank"); return `<span class="message">Opening LinkedIn profile...</span>`; },
     getgithub: () => { window.open("https://github.com/snehabichkunde", "_blank"); return `<span class="message">Opening GitHub profile...</span>`; },
     themes: (args) => {
@@ -199,72 +208,67 @@ const terminalPortfolio = (() => {
   };
   
   // === CORE LOGIC ===
+  async function typeWelcomeMessage() {
+    let welcomeMessage;
+    const TYPING_SPEED_MS = 30;
+    const isMobile = window.innerWidth <= 600;
 
-  // Restored Welcome Message function
-// === CORE LOGIC ===
-
-// REPLACED Welcome Message function
-async function typeWelcomeMessage() {
-  let welcomeMessage;
-  const TYPING_SPEED_MS = 30;
-  const isMobile = window.innerWidth <= 600;
-
-  if (isMobile) {
-    welcomeMessage = `
-<div class="message">Session initialized.</div>
-<div class="header">Welcome to Sneha's Portfolio</div>
-<div class="suggest">Tap the command chips below to explore.</div>
+    if (isMobile) {
+      welcomeMessage = `
+<div class="message">Welcome to Sneha's Terminal Portfolio!</div>
+<div class="suggest">Start with the <span class="command">help</span> command below to explore my work. Scroll and tap the chips!</div>
 `;
-  } else {
-    welcomeMessage = `
+    } else {
+      welcomeMessage = `
 <div class="message">Initializing session for user: guest...</div>
 <div class="message">Connection established.</div>
 <div class="header">Welcome to Sneha Bichkunde's digital space.</div>
 <div class="suggest">Run <span class="command">help</span> to see available documentation.</div>
 `;
-  }
-
-  let isTyping = true;
-  const skipAnimation = () => { isTyping = false; };
-  document.addEventListener('keydown', skipAnimation, { once: true });
-  document.addEventListener('click', skipAnimation, { once: true });
-
-  const container = document.createElement("div");
-  container.className = "output";
-  terminal.appendChild(container);
-
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = welcomeMessage.trim();
-
-  async function typeNode(node, parentEl) {
-    if (!isTyping) return;
-    if (node.nodeType === Node.TEXT_NODE) {
-      for (const char of node.textContent) {
-        if (!isTyping) break;
-        parentEl.innerHTML += char;
-        await new Promise(r => setTimeout(r, TYPING_SPEED_MS));
-      }
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      const el = document.createElement(node.nodeName);
-      for(const attr of node.attributes) el.setAttribute(attr.name, attr.value);
-      parentEl.appendChild(el);
-      for (const child of node.childNodes) await typeNode(child, el);
     }
+
+    let isTyping = true;
+    const skipAnimation = () => { isTyping = false; };
+    document.addEventListener('keydown', skipAnimation, { once: true });
+    document.addEventListener('click', skipAnimation, { once: true });
+
+    const container = document.createElement("div");
+    container.className = "output";
+    terminal.appendChild(container);
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = welcomeMessage.trim();
+
+    async function typeNode(node, parentEl) {
+      if (!isTyping) return;
+      if (node.nodeType === Node.TEXT_NODE) {
+        for (const char of node.textContent) {
+          if (!isTyping) break;
+          parentEl.innerHTML += char;
+          await new Promise(r => setTimeout(r, TYPING_SPEED_MS));
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = document.createElement(node.nodeName);
+        for(const attr of node.attributes) el.setAttribute(attr.name, attr.value);
+        parentEl.appendChild(el);
+        for (const child of node.childNodes) await typeNode(child, el);
+      }
+    }
+
+    for (const node of tempDiv.childNodes) await typeNode(node, container);
+    if (!isTyping) container.innerHTML = welcomeMessage.trim();
+    
+    document.removeEventListener('keydown', skipAnimation);
+    document.removeEventListener('click', skipAnimation);
+
+    if (!isMobile) {
+      appendNewDesktopPrompt();
+      focusInput();
+    }
+    
+    scrollToBottom();
   }
 
-  for (const node of tempDiv.childNodes) await typeNode(node, container);
-  if (!isTyping) container.innerHTML = welcomeMessage.trim();
-  
-  document.removeEventListener('keydown', skipAnimation);
-  document.removeEventListener('click', skipAnimation);
-
-  if (!isMobile) {
-    appendNewDesktopPrompt();
-    focusInput();
-  }
-  
-  scrollToBottom();
-}
   function typeOutput(output) {
     const outputDiv = document.createElement("div");
     outputDiv.className = "output";
@@ -281,7 +285,6 @@ async function typeWelcomeMessage() {
     terminal.appendChild(newPrompt);
   }
 
-  // Refactored unified command execution logic
   async function executeCommand(commandStr) {
     const trimmedCmd = commandStr.trim();
 
@@ -334,51 +337,61 @@ async function typeWelcomeMessage() {
     };
   }
 
-function populateMobileCommands(menu = 'main') {
-  if (!mobileCommandBar || window.innerWidth > 600) return;
-  mobileCommandBar.innerHTML = '';
+  function populateMobileCommands(menu = 'main') {
+    if (!mobileCommandBar || window.innerWidth > 600) return;
+    mobileCommandBar.innerHTML = '';
 
-  let commandsToShow;
+    let commandsToShow;
 
-  if (menu === 'themes') {
-    commandsToShow = ['dark', 'light', 'matrix', 'hello_kitty', 'back'];
-  } else {
-    const priorityOrder = [
+    if (menu === 'themes') {
+      commandsToShow = ['dark', 'light', 'matrix', 'hello_kitty', 'back'];
+    } else {
+      const priorityOrder = [
+        'help', // Moved help to the top
         'about-me', 
         'my-projects', 
         'technical-skills',
         'getcv',
-        'help', 
         'themes',
         'clear'
-    ];
-    
-    const otherCommands = Object.keys(commands).filter(cmd => !priorityOrder.includes(cmd));
-    commandsToShow = [...priorityOrder, ...otherCommands];
-  }
-
-  commandsToShow.forEach(cmd => {
-    const chip = document.createElement('button');
-    chip.className = 'command-chip';
-    chip.textContent = cmd.replace(/-/g, ' ');
-
-    if (cmd === 'back') {
-      chip.classList.add('back-chip');
-      chip.onclick = () => populateMobileCommands('main');
-    } else if (cmd === 'themes' && menu === 'main') {
-      chip.onclick = () => populateMobileCommands('themes');
-    } else if (menu === 'themes') {
-      chip.onclick = () => {
-        executeCommand(`themes ${cmd}`);
-        populateMobileCommands('main');
-      };
-    } else {
-      chip.onclick = () => executeCommand(cmd);
+      ];
+      const otherCommands = Object.keys(commands).filter(cmd => !priorityOrder.includes(cmd));
+      commandsToShow = [...priorityOrder, ...otherCommands];
     }
-    
-    mobileCommandBar.appendChild(chip);
-  });
-}
+
+    commandsToShow.forEach((cmd, index) => {
+      const chip = document.createElement('button');
+      chip.className = 'command-chip';
+      chip.textContent = cmd.replace(/-/g, ' ');
+      
+      // Add visual distinction for the first chip (help)
+      if (cmd === 'help' && menu === 'main') {
+        chip.classList.add('highlight-chip');
+      }
+
+      if (cmd === 'back') {
+        chip.classList.add('back-chip');
+        chip.onclick = () => populateMobileCommands('main');
+      } else if (cmd === 'themes' && menu === 'main') {
+        chip.onclick = () => populateMobileCommands('themes');
+      } else if (menu === 'themes') {
+        chip.onclick = () => {
+          executeCommand(`themes ${cmd}`);
+          populateMobileCommands('main');
+        };
+      } else {
+        chip.onclick = () => executeCommand(cmd);
+      }
+      
+      mobileCommandBar.appendChild(chip);
+    });
+
+    // Add scroll indicator
+    const scrollIndicator = document.createElement('div');
+    scrollIndicator.className = 'scroll-indicator';
+    scrollIndicator.innerHTML = '<span>← Scroll for more →</span>';
+    mobileCommandBar.appendChild(scrollIndicator);
+  }
 
   // === EVENT LISTENERS ===
   function setupEventListeners() {

@@ -1,5 +1,5 @@
 // --- CONFIGURATION (Tuned for a Professional Look) ---
-const NUM_BOIDS = 100;
+const NUM_BOIDS = window.innerWidth <= 600 ? 20 : 100; // Reduced to 20 boids for mobile
 const MAX_SPEED = 1.2;
 const MAX_FORCE = 0.03;
 const BOID_SIZE = 8; // Length of the line
@@ -156,8 +156,6 @@ class Boid {
 }
 
 // --- P5.JS MAIN FUNCTIONS ---
-
-// NEW: Function to recursively draw the quadtree
 function showQuadtree(qt) {
   noFill();
   strokeWeight(1);
@@ -203,12 +201,11 @@ function draw() {
     background(...currentTheme.backgroundColor, currentTheme.backgroundAlpha);
   }
 
-  let globalAlpha = map(flock[0].life, 0, FADE_IN_DURATION, 0, 255, true);
+  let globalAlpha = map(flock[0]?.life || 0, 0, FADE_IN_DURATION, 0, 255, true);
 
   let qt = new Quadtree(new Rectangle(width / 2, height / 2, width / 2, height / 2), QUADTREE_CAPACITY);
   for (let boid of flock) { qt.insert(new Point(boid.position.x, boid.position.y, boid)); }
   
-  // RENDER THE QUADTREE FOR THE MATRIX THEME
   if (currentTheme === themes.matrix) {
     showQuadtree(qt);
   }
@@ -217,7 +214,6 @@ function draw() {
     let range = new Rectangle(boid.position.x, boid.position.y, CONNECTION_RADIUS, CONNECTION_RADIUS);
     let nearby = qt.query(range).map(p => p.userData);
     
-    // Draw Plexus Lines (except for matrix theme, where the quadtree is the main visual)
     if (currentTheme !== themes.matrix) {
       for(let other of nearby) {
           let d = boid.position.dist(other.position);
